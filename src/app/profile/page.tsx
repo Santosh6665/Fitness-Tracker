@@ -63,30 +63,39 @@ export default function ProfilePage() {
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues: async () => {
-      if (user) {
-        setIsFetching(true);
-        try {
-          const profile = await getUserProfile(user.uid);
-          return {
-            displayName: profile?.displayName || user.displayName || "",
-            age: profile?.age,
-            gender: profile?.gender,
-            weight: profile?.weight,
-            height: profile?.height,
-            fitnessLevel: profile?.fitnessLevel,
-            goals: profile?.goals || [],
-          };
-        } catch (error) {
-          toast({ variant: "destructive", title: "Failed to load profile." });
-          return {};
-        } finally {
-            setIsFetching(false);
-        }
-      }
-      return {};
+    defaultValues: {
+        displayName: "",
+        age: undefined,
+        weight: undefined,
+        height: undefined,
+        goals: [],
     },
   });
+
+  useEffect(() => {
+    if (user) {
+        setIsFetching(true);
+        getUserProfile(user.uid)
+            .then((profile) => {
+                form.reset({
+                    displayName: profile?.displayName || user.displayName || "",
+                    age: profile?.age,
+                    gender: profile?.gender,
+                    weight: profile?.weight,
+                    height: profile?.height,
+                    fitnessLevel: profile?.fitnessLevel,
+                    goals: profile?.goals || [],
+                });
+            })
+            .catch(() => {
+                 toast({ variant: "destructive", title: "Failed to load profile." });
+            })
+            .finally(() => {
+                setIsFetching(false);
+            })
+    }
+  }, [user, form, toast]);
+
 
   async function onSubmit(data: ProfileFormValues) {
     if (!user) return;
@@ -156,7 +165,7 @@ export default function ProfilePage() {
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                       className="flex gap-4"
                     >
                       <FormItem className="flex items-center space-x-2">
@@ -225,7 +234,7 @@ export default function ProfilePage() {
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                       className="flex flex-col space-y-1"
                     >
                       <FormItem className="flex items-center space-x-3">
@@ -269,7 +278,7 @@ export default function ProfilePage() {
                               checked={field.value?.includes(item.id)}
                               onCheckedChange={(checked) => {
                                 return checked
-                                  ? field.onChange([...field.value, item.id])
+                                  ? field.onChange([...(field.value || []), item.id])
                                   : field.onChange(
                                       field.value?.filter(
                                         (value) => value !== item.id
@@ -355,3 +364,5 @@ function ProfileSkeleton() {
       </div>
     );
   }
+
+    
