@@ -132,12 +132,12 @@ function ExerciseCard({ exercise }: { exercise: Exercise }) {
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="font-headline text-2xl">{exercise.name}</DialogTitle>
-          <DialogDescription>
+          <div className="text-sm text-muted-foreground">
             <div className="flex flex-wrap gap-2 mt-2">
               <Badge variant="secondary">{exercise.muscleGroup}</Badge>
               <Badge variant="outline">{exercise.equipment}</Badge>
             </div>
-          </DialogDescription>
+          </div>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="relative aspect-video">
