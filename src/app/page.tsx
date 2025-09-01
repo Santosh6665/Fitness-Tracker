@@ -108,7 +108,7 @@ function RecentActivity() {
             toast({
                 variant: "destructive",
                 title: "Failed to load activity",
-                description: "Could not fetch your recent workouts. Please try again later.",
+                description: "Could not fetch your recent workouts. This may be due to API rate limits. Please try again later.",
             });
         } finally {
             setIsLoading(false);
@@ -128,7 +128,7 @@ function RecentActivity() {
             </Button>
           </CardHeader>
           <CardContent>
-             {isLoading ? (
+             {isLoading && workouts === staticRecentWorkouts ? (
                 <div className="flex items-center justify-center text-muted-foreground h-48">
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Loading workout history...
