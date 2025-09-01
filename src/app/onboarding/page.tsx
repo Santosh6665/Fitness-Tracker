@@ -70,10 +70,10 @@ export default function OnboardingPage() {
   const methods = useForm<OnboardingFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      age: 0,
+      age: undefined,
       gender: undefined,
-      weight: 0,
-      height: 0,
+      weight: undefined,
+      height: undefined,
       fitnessLevel: undefined,
       goals: [],
     },
@@ -149,12 +149,12 @@ export default function OnboardingPage() {
             </CardContent>
             {step < 5 && (
               <CardFooter className="flex justify-between">
-                {step > 0 && (
+                {step > 0 && step < 5 && (
                   <Button type="button" variant="outline" onClick={prevStep}>
                     <ArrowLeft className="mr-2" /> Previous
                   </Button>
                 )}
-                <div />
+                { step === 0 && <div /> }
                 {step < 4 && (
                    <Button type="button" onClick={nextStep}>
                     Next <ArrowRight className="ml-2" />
@@ -196,7 +196,7 @@ function PersonalDetailsStep() {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Age</FormLabel>
-            <FormControl><Input type="number" placeholder="e.g., 25" {...field} value={field.value || ''} /></FormControl>
+            <FormControl><Input type="number" placeholder="e.g., 25" {...field} value={field.value ?? ''} /></FormControl>
             <FormMessage />
           </FormItem>
         )}
@@ -234,7 +234,7 @@ function PersonalDetailsStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Weight (kg)</FormLabel>
-              <FormControl><Input type="number" placeholder="e.g., 70" {...field} value={field.value || ''} /></FormControl>
+              <FormControl><Input type="number" placeholder="e.g., 70" {...field} value={field.value ?? ''} /></FormControl>
                <FormMessage />
             </FormItem>
           )}
@@ -245,7 +245,7 @@ function PersonalDetailsStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Height (cm)</FormLabel>
-              <FormControl><Input type="number" placeholder="e.g., 175" {...field} value={field.value || ''} /></FormControl>
+              <FormControl><Input type="number" placeholder="e.g., 175" {...field} value={field.value ?? ''} /></FormControl>
                <FormMessage />
             </FormItem>
           )}
@@ -325,7 +325,7 @@ function GoalsStep() {
                           checked={field.value?.includes(item.id)}
                           onCheckedChange={(checked) => {
                             return checked
-                              ? field.onChange([...field.value, item.id])
+                              ? field.onChange([...(field.value || []), item.id])
                               : field.onChange(field.value?.filter((value) => value !== item.id));
                           }}
                         />
@@ -396,3 +396,5 @@ function AIResultDisplay({ result, isLoading }: { result: ProcessOnboardingOutpu
         </div>
     )
 }
+
+    
