@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Flame, Beef, Wheat, Fish } from "lucide-react";
+import { Flame, Beef, Wheat, Fish, GlassWater } from "lucide-react";
 
 const nutritionData = {
   calories: {
@@ -53,6 +53,14 @@ const nutritionData = {
     icon: Fish,
     color: "bg-blue-500",
   },
+  water: {
+    label: "Water",
+    current: 1.5,
+    target: 2.5,
+    unit: "L",
+    icon: GlassWater,
+    color: "bg-sky-500",
+  },
 };
 
 export default function NutritionPage() {
@@ -66,7 +74,7 @@ export default function NutritionPage() {
           </div>
           <LogMealDialog />
         </CardHeader>
-        <CardContent className="grid gap-6 md:grid-cols-2">
+        <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Object.values(nutritionData).map((item) => (
             <Card key={item.label}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
