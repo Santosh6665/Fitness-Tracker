@@ -56,7 +56,7 @@ const goalItems = [
 ];
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
@@ -74,30 +74,34 @@ export default function ProfilePage() {
 
   useEffect(() => {
     async function fetchProfile() {
-        if (user) {
-            try {
-                const profile = await getUserProfile(user.uid);
-                if (profile) {
-                    form.reset({
-                        displayName: profile.displayName || user.displayName || "",
-                        age: profile.age,
-                        gender: profile.gender,
-                        weight: profile.weight,
-                        height: profile.height,
-                        fitnessLevel: profile.fitnessLevel,
-                        goals: profile.goals || [],
-                    });
-                }
-            } catch (error) {
-                console.error(error);
-                toast({ variant: "destructive", title: "Failed to load profile." });
-            } finally {
-                setIsFetching(false);
-            }
+      if (user) {
+        setIsFetching(true);
+        try {
+          const profile = await getUserProfile(user.uid);
+          if (profile) {
+            form.reset({
+              displayName: profile.displayName || user.displayName || "",
+              age: profile.age,
+              gender: profile.gender,
+              weight: profile.weight,
+              height: profile.height,
+              fitnessLevel: profile.fitnessLevel,
+              goals: profile.goals || [],
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          toast({ variant: "destructive", title: "Failed to load profile." });
+        } finally {
+          setIsFetching(false);
         }
+      } else if (!isAuthLoading) {
+        // If auth is done loading and there's no user, stop fetching.
+        setIsFetching(false);
+      }
     }
     fetchProfile();
-  }, [user, form, toast]);
+  }, [user, isAuthLoading, form, toast]);
 
 
   async function onSubmit(data: ProfileFormValues) {
@@ -120,7 +124,7 @@ export default function ProfilePage() {
     }
   }
 
-  if (isFetching) {
+  if (isFetching || isAuthLoading) {
     return <ProfileSkeleton />;
   }
 
@@ -367,5 +371,7 @@ function ProfileSkeleton() {
       </div>
     );
   }
+
+    
 
     
