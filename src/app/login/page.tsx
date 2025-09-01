@@ -42,6 +42,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [configError, setConfigError] = useState(false);
+  const [credentialError, setCredentialError] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,6 +55,7 @@ export default function LoginPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setConfigError(false);
+    setCredentialError(false);
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       router.push("/");
@@ -63,6 +65,7 @@ export default function LoginPage() {
         setConfigError(true);
         errorMessage = "Firebase configuration is missing or incorrect. See details below.";
       } else if (error.code === "auth/invalid-credential") {
+         setCredentialError(true);
          errorMessage = "Invalid email or password. Please try again.";
       }
 
@@ -93,6 +96,14 @@ export default function LoginPage() {
               <AlertDescription>
                 To fix this, you must enable Email/Password sign-in in the
                 Firebase console for your project.
+              </AlertDescription>
+            </Alert>
+          )}
+          {credentialError && (
+             <Alert variant="destructive" className="mb-4">
+              <AlertTitle>Login Failed</AlertTitle>
+              <AlertDescription>
+                The email or password you entered is incorrect. Please try again.
               </AlertDescription>
             </Alert>
           )}
