@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI agent that provides feedback on exercise form using video analysis.
@@ -50,6 +51,7 @@ const getAiFormCorrectionFeedbackFlow = ai.defineFlow(
     name: 'getAiFormCorrectionFeedbackFlow',
     inputSchema: GetAiFormCorrectionFeedbackInputSchema,
     outputSchema: GetAiFormCorrectionFeedbackOutputSchema,
+    model: 'gemini-1.5-flash-latest',
   },
   async input => {
     const {output} = await prompt(input);
