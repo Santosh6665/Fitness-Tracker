@@ -158,13 +158,13 @@ export default function DashboardPage() {
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline text-3xl">Welcome back, Fitness Warrior!</CardTitle>
+          <CardTitle className="font-headline text-2xl sm:text-3xl">Welcome back, Fitness Warrior!</CardTitle>
           <CardDescription>
             Here's a snapshot of your fitness journey. Keep up the great work!
           </CardDescription>
         </CardHeader>
         <CardContent>
-            <p className="mb-4">Ready to fine-tune your fitness plan? Complete our quick onboarding questionnaire to get personalized recommendations from our AI coach.</p>
+            <p className="mb-4 text-sm sm:text-base">Ready to fine-tune your fitness plan? Complete our quick onboarding questionnaire to get personalized recommendations from our AI coach.</p>
              <Button asChild>
                 <Link href="/onboarding">Personalize Your Plan</Link>
             </Button>
@@ -202,9 +202,9 @@ export default function DashboardPage() {
                 <TableBody>
                   {recentWorkouts.map((workout, index) => (
                     <TableRow key={index}>
-                      <TableCell>{workout.date}</TableCell>
-                      <TableCell className="font-medium">{workout.type}</TableCell>
-                      <TableCell className="text-right">{workout.duration}</TableCell>
+                      <TableCell className="text-xs sm:text-sm">{workout.date}</TableCell>
+                      <TableCell className="font-medium text-xs sm:text-sm">{workout.type}</TableCell>
+                      <TableCell className="text-right text-xs sm:text-sm">{workout.duration}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

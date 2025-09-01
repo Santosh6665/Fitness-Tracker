@@ -75,14 +75,14 @@ export default function NutritionPage() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <CardTitle className="font-headline">Daily Nutrition</CardTitle>
             <CardDescription>Your intake for today.</CardDescription>
           </div>
           <LogMealDialog />
         </CardHeader>
-        <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {Object.values(nutritionData).map((item) => (
             <Card key={item.label}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">

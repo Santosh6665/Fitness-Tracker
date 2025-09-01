@@ -70,10 +70,10 @@ export default function OnboardingPage() {
   const methods = useForm<OnboardingFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      age: undefined,
+      age: 0,
       gender: undefined,
-      weight: undefined,
-      height: undefined,
+      weight: 0,
+      height: 0,
       fitnessLevel: undefined,
       goals: [],
     },
@@ -176,7 +176,7 @@ export default function OnboardingPage() {
 
 function WelcomeStep({ nextStep }: { nextStep: () => void }) {
   return (
-    <div className="text-center flex flex-col items-center justify-center h-full space-y-6 p-8">
+    <div className="text-center flex flex-col items-center justify-center h-full space-y-6 p-4 md:p-8">
         <Bot size={64} className="text-primary"/>
         <h2 className="text-2xl font-bold font-headline">Let's Build Your Perfect Plan</h2>
         <p className="text-muted-foreground max-w-md">
@@ -208,7 +208,7 @@ function PersonalDetailsStep() {
           <FormItem>
             <FormLabel>Gender</FormLabel>
             <FormControl>
-              <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+              <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col sm:flex-row gap-4">
                 <FormItem className="flex items-center space-x-2">
                   <FormControl><RadioGroupItem value="male" /></FormControl>
                   <FormLabel className="font-normal">Male</FormLabel>
@@ -227,7 +227,7 @@ function PersonalDetailsStep() {
           </FormItem>
         )}
       />
-       <div className="grid grid-cols-2 gap-4">
+       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
          <FormField
           control={control}
           name="weight"
@@ -269,23 +269,23 @@ function FitnessLevelStep() {
                     <RadioGroup
                         onValueChange={field.onChange}
                         defaultValue={field.value}
-                        className="flex flex-col space-y-1"
+                        className="flex flex-col space-y-2"
                     >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex items-center space-x-3 space-y-0 p-2 rounded-md hover:bg-muted/50 transition-colors">
                             <FormControl><RadioGroupItem value="beginner" /></FormControl>
-                            <FormLabel className="font-normal">
+                            <FormLabel className="font-normal cursor-pointer flex-1">
                                 <strong>Beginner:</strong> Just starting out, little to no experience.
                             </FormLabel>
                         </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex items-center space-x-3 space-y-0 p-2 rounded-md hover:bg-muted/50 transition-colors">
                             <FormControl><RadioGroupItem value="intermediate" /></FormControl>
-                            <FormLabel className="font-normal">
+                            <FormLabel className="font-normal cursor-pointer flex-1">
                                 <strong>Intermediate:</strong> Consistent with exercise for 6+ months.
                             </FormLabel>
                         </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormItem className="flex items-center space-x-3 space-y-0 p-2 rounded-md hover:bg-muted/50 transition-colors">
                             <FormControl><RadioGroupItem value="advanced" /></FormControl>
-                            <FormLabel className="font-normal">
+                            <FormLabel className="font-normal cursor-pointer flex-1">
                                 <strong>Advanced:</strong> Multiple years of structured training.
                             </FormLabel>
                         </FormItem>
@@ -311,7 +311,7 @@ function GoalsStep() {
             <FormLabel className="text-base">What are your main fitness goals?</FormLabel>
             <FormDescription>Select all that apply.</FormDescription>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {goalItems.map((item) => (
               <FormField
                 key={item.id}
@@ -319,7 +319,7 @@ function GoalsStep() {
                 name="goals"
                 render={({ field }) => {
                   return (
-                    <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 hover:bg-muted/50 transition-colors">
                       <FormControl>
                         <Checkbox
                           checked={field.value?.includes(item.id)}
@@ -330,14 +330,14 @@ function GoalsStep() {
                           }}
                         />
                       </FormControl>
-                      <FormLabel className="font-normal">{item.label}</FormLabel>
+                      <FormLabel className="font-normal cursor-pointer flex-1">{item.label}</FormLabel>
                     </FormItem>
                   );
                 }}
               />
             ))}
           </div>
-          <FormMessage />
+          <FormMessage className="pt-2" />
         </FormItem>
       )}
     />
@@ -349,13 +349,13 @@ function SummaryStep({ values }: { values: OnboardingFormValues }) {
     <div className="space-y-4">
         <h3 className="text-lg font-bold font-headline">Please review your information</h3>
         <Card>
-            <CardContent className="pt-6 grid grid-cols-2 gap-4 text-sm">
-                <div><span className="font-semibold">Age:</span> {values.age}</div>
-                <div><span className="font-semibold">Gender:</span> <span className="capitalize">{values.gender}</span></div>
-                <div><span className="font-semibold">Weight:</span> {values.weight} kg</div>
-                <div><span className="font-semibold">Height:</span> {values.height} cm</div>
-                <div className="col-span-2"><span className="font-semibold">Fitness Level:</span> <span className="capitalize">{values.fitnessLevel}</span></div>
-                <div className="col-span-2"><span className="font-semibold">Goals:</span> {values.goals.map(g => goalItems.find(i => i.id === g)?.label).join(', ')}</div>
+            <CardContent className="pt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div><span className="font-semibold text-muted-foreground">Age:</span> {values.age}</div>
+                <div><span className="font-semibold text-muted-foreground">Gender:</span> <span className="capitalize">{values.gender}</span></div>
+                <div><span className="font-semibold text-muted-foreground">Weight:</span> {values.weight} kg</div>
+                <div><span className="font-semibold text-muted-foreground">Height:</span> {values.height} cm</div>
+                <div className="col-span-1 sm:col-span-2"><span className="font-semibold text-muted-foreground">Fitness Level:</span> <span className="capitalize">{values.fitnessLevel}</span></div>
+                <div className="col-span-1 sm:col-span-2"><span className="font-semibold text-muted-foreground">Goals:</span> {values.goals.map(g => goalItems.find(i => i.id === g)?.label).join(', ')}</div>
             </CardContent>
         </Card>
         <p className="text-sm text-muted-foreground">
@@ -387,10 +387,10 @@ function AIResultDisplay({ result, isLoading }: { result: ProcessOnboardingOutpu
     }
 
     return (
-        <div className="space-y-4">
-            <h3 className="text-xl font-bold font-headline text-center">{result.welcomeMessage}</h3>
-            <p className="text-center text-muted-foreground">{result.initialSummary}</p>
-            <div className="flex justify-center">
+        <div className="space-y-6 text-center">
+            <h3 className="text-xl font-bold font-headline">{result.welcomeMessage}</h3>
+            <p className="text-muted-foreground">{result.initialSummary}</p>
+            <div className="flex justify-center pt-4">
                  <Button onClick={() => router.push('/')}>Start Your First Workout</Button>
             </div>
         </div>
