@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   NotebookPen,
   Video,
+  Mic,
 } from "lucide-react";
 
 import {
@@ -32,6 +33,7 @@ const navItems = [
   { href: "/exercises", icon: Dumbbell, label: "Exercises" },
   { href: "/form-check", icon: Video, label: "Form Check" },
   { href: "/nutrition", icon: Flame, label: "Nutrition" },
+  { href: "/journal", icon: Mic, label: "Voice Journal" },
 ];
 
 function PageHeader() {
