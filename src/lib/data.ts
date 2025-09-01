@@ -1,3 +1,4 @@
+
 export const goals = [
   { name: "Lose 5kg", current: 2, target: 5, unit: "kg" },
   { name: "Run 10k", current: 6, target: 10, unit: "km" },
@@ -12,12 +13,12 @@ export const recentWorkouts = [
 ];
 
 export const progressData = [
-  { month: "Jan", weight: 75, squat: 80 },
-  { month: "Feb", weight: 74, squat: 85 },
-  { month: "Mar", weight: 74, squat: 90 },
-  { month: "Apr", weight: 73, squat: 95 },
-  { month: "May", weight: 72, squat: 100 },
-  { month: "Jun", weight: 71, squat: 105 },
+  { month: "Jan", weight: 75, squat: 80, calories: 2600, workouts: 3 },
+  { month: "Feb", weight: 74, squat: 85, calories: 2500, workouts: 4 },
+  { month: "Mar", weight: 74, squat: 90, calories: 2550, workouts: 4 },
+  { month: "Apr", weight: 73, squat: 95, calories: 2450, workouts: 5 },
+  { month: "May", weight: 72, squat: 100, calories: 2400, workouts: 4 },
+  { month: "Jun", weight: 71, squat: 105, calories: 2350, workouts: 5 },
 ];
 
 export const exercises = [
