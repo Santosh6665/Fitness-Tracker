@@ -17,21 +17,20 @@ export function Logo({ className }: { className?: string }) {
             </linearGradient>
         </defs>
         <rect width="24" height="24" rx="6" ry="6" fill="url(#pulse-gradient)" />
-        <path 
-            d="M8.5 14.5C8.5 14.5 8 13 9 12C10 11 11.5 11.5 11.5 11.5L13 13L15 8.5C15 8.5 15.5 7 14.5 6.5C13.5 6 12.5 7 12.5 7L8.5 14.5Z" 
-            fill="hsl(var(--primary-foreground))"
+        <path
+            d="M5 12H8L10.5 5L13.5 19L16 12H19"
             stroke="hsl(var(--primary-foreground))"
-            strokeWidth="0.5"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
-            strokeLinecap="round"
         />
-        <path 
-            d="M12.5 17.5C12.5 17.5 15 16 15 13.5C15 11 11.5 11.5 11.5 11.5"
+        <path
+            d="M17 10L16 12L17 14"
             stroke="hsl(var(--primary-foreground))"
-            strokeWidth="1.5"
+            strokeWidth="2"
             strokeLinecap="round"
+            strokeLinejoin="round"
         />
-        <circle cx="13" cy="5" r="1.5" fill="hsl(var(--primary-foreground))" />
     </svg>
   );
 }
