@@ -1,15 +1,19 @@
 
+import { format, subDays } from 'date-fns';
+
 export const goals = [
   { name: "Lose 5kg", current: 2, target: 5, unit: "kg" },
   { name: "Run 10k", current: 6, target: 10, unit: "km" },
   { name: "Workout 4x/week", current: 3, target: 4, unit: "workouts" },
 ];
 
+const today = new Date();
+
 export const recentWorkouts = [
-  { date: "2024-07-28", type: "Full Body Strength", duration: "60 min" },
-  { date: "2024-07-26", type: "Cardio & Core", duration: "45 min" },
-  { date: "2024-07-24", type: "Upper Body Power", duration: "55 min" },
-  { date: "2024-07-22", type: "Leg Day", duration: "70 min" },
+  { date: format(today, 'yyyy-MM-dd'), type: "Full Body Strength", duration: "60 min" },
+  { date: format(subDays(today, 2), 'yyyy-MM-dd'), type: "Cardio & Core", duration: "45 min" },
+  { date: format(subDays(today, 4), 'yyyy-MM-dd'), type: "Upper Body Power", duration: "55 min" },
+  { date: format(subDays(today, 6), 'yyyy-MM-dd'), type: "Leg Day", duration: "70 min" },
 ];
 
 export const progressData = [
