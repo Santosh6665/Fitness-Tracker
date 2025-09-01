@@ -1,135 +1,119 @@
-
-"use client";
-
-import { useState } from "react";
+import { Share2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/firebase/client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardFooter
 } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { goals, recentWorkouts } from "@/lib/data";
+import { ProgressChart } from "@/components/dashboard/progress-chart";
 
-const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email." }),
-  password: z.string().min(1, { message: "Password is required." }),
-});
-
-export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-  const { toast } = useToast();
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
-    try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
-      router.push("/");
-    } catch (error: any) {
-      let errorMessage = "An unknown error occurred.";
-      if (error.code === "auth/configuration-not-found") {
-        errorMessage = "Action required: You must enable Email/Password sign-in in the Firebase console before you can log in.";
-      } else if (error.code === "auth/invalid-credential") {
-        errorMessage = "Invalid email or password. Please try again.";
-      }
-      toast({
-        variant: "destructive",
-        title: "Login Failed",
-        description: errorMessage,
-      });
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
+export default function DashboardPage() {
   return (
-    <div className="flex h-screen items-center justify-center bg-background">
-      <Card className="w-full max-w-sm">
+    <div className="flex flex-col gap-6">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-2xl font-headline">Login</CardTitle>
+          <CardTitle className="font-headline text-3xl">Welcome back, Fitness Warrior!</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account.
+            Here's a snapshot of your fitness journey. Keep up the great work!
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="m@example.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Login
-              </Button>
-            </form>
-          </Form>
+            <p className="mb-4">Ready to fine-tune your fitness plan? Complete our quick onboarding questionnaire to get personalized recommendations from our AI coach.</p>
+             <Button asChild>
+                <Link href="/onboarding">Personalize Your Plan</Link>
+            </Button>
         </CardContent>
-        <CardFooter className="text-sm">
-          <p>
-            Don't have an account?{" "}
-            <Link href="/signup" className="underline">
-              Sign up
-            </Link>
-          </p>
-        </CardFooter>
       </Card>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="font-headline">Progress Overview</CardTitle>
+            <CardDescription>Your weight and squat progression over the last 6 months.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ProgressChart />
+          </CardContent>
+        </Card>
+
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-headline">Your Goals</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {goals.map((goal, index) => (
+                <div key={index}>
+                  <div className="flex justify-between text-sm font-medium mb-1">
+                    <span>{goal.name}</span>
+                    <span className="text-muted-foreground">{goal.current}{goal.unit} / {goal.target}{goal.unit}</span>
+                  </div>
+                  <Progress value={(goal.current / goal.target) * 100} aria-label={`${goal.name} progress`} />
+                </div>
+              ))}
+            </CardContent>
+            <CardFooter>
+               <Button variant="outline" className="w-full">Set a New Goal</Button>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="font-headline">Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Workout</TableHead>
+                    <TableHead className="text-right">Duration</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recentWorkouts.map((workout, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{workout.date}</TableCell>
+                      <TableCell className="font-medium">{workout.type}</TableCell>
+                      <TableCell className="text-right">{workout.duration}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+          <Card>
+              <CardHeader>
+                  <CardTitle className="font-headline text-2xl text-center">Milestone Unlocked!</CardTitle>
+                  <CardDescription className="text-center">You've hit a new Personal Best on Squats!</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center justify-center">
+                  <div className="text-6xl font-bold text-primary font-headline">105kg</div>
+                  <p className="text-muted-foreground mt-2">Awesome job!</p>
+              </CardContent>
+              <CardFooter>
+                   <Button className="w-full">
+                      <Share2 className="mr-2 h-4 w-4"/>
+                      Share Achievement
+                  </Button>
+              </CardFooter>
+          </Card>
+      </div>
     </div>
   );
 }

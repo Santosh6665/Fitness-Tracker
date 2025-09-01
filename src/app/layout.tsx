@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AppShell } from '@/components/layout/app-shell';
 import { Toaster } from '@/components/ui/toaster';
-import { AuthProvider } from '@/hooks/use-auth';
 
 export const metadata: Metadata = {
   title: 'Fitness Compass',
@@ -29,9 +28,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <AuthProvider>
-          <AppShell>{children}</AppShell>
-        </AuthProvider>
+        <AppShell>{children}</AppShell>
         <Toaster />
       </body>
     </html>

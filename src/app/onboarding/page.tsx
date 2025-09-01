@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,6 +30,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { processOnboarding, type ProcessOnboardingOutput } from "@/ai/flows/process-onboarding";
+import { useRouter } from "next/navigation";
 
 const personalDetailsSchema = z.object({
   age: z.coerce.number().min(16, "Must be at least 16").max(100),
@@ -116,7 +117,7 @@ export default function OnboardingPage() {
   ];
 
   return (
-    <div className="flex justify-center items-start min-h-full p-4">
+    <div className="flex justify-center items-center min-h-screen p-4 bg-background">
       <Card className="w-full max-w-2xl">
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
@@ -360,6 +361,8 @@ function SummaryStep({ values }: { values: OnboardingFormValues }) {
 }
 
 function AIResultDisplay({ result, isLoading }: { result: ProcessOnboardingOutput | null, isLoading: boolean }) {
+    const router = useRouter();
+
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center h-full space-y-4 text-center p-8">
@@ -383,7 +386,7 @@ function AIResultDisplay({ result, isLoading }: { result: ProcessOnboardingOutpu
             <h3 className="text-xl font-bold font-headline text-center">{result.welcomeMessage}</h3>
             <p className="text-center text-muted-foreground">{result.initialSummary}</p>
             <div className="flex justify-center">
-                 <Button>Start Your First Workout</Button>
+                 <Button onClick={() => router.push('/')}>Start Your First Workout</Button>
             </div>
         </div>
     )

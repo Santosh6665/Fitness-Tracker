@@ -1,52 +1,119 @@
-"use client";
-
+import { Share2 } from "lucide-react";
+import Link from "next/link";
 import {
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-  ReactNode,
-} from "react";
-import { User, onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/firebase/client";
-import { useRouter, usePathname } from "next/navigation";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { goals, recentWorkouts } from "@/lib/data";
+import { ProgressChart } from "@/components/dashboard/progress-chart";
 
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-}
-
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  loading: true,
-});
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-      
-      const isAuthPage = pathname === "/login" || pathname === "/signup";
-
-      if (!user && !isAuthPage) {
-        router.push("/login");
-      }
-    });
-
-    return () => unsubscribe();
-  }, [router, pathname]);
-
+export default function DashboardPage() {
   return (
-    <AuthContext.Provider value={{ user, loading }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+    <div className="flex flex-col gap-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-headline text-3xl">Welcome back, Fitness Warrior!</CardTitle>
+          <CardDescription>
+            Here's a snapshot of your fitness journey. Keep up the great work!
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+            <p className="mb-4">Ready to fine-tune your fitness plan? Complete our quick onboarding questionnaire to get personalized recommendations from our AI coach.</p>
+             <Button asChild>
+                <Link href="/onboarding">Personalize Your Plan</Link>
+            </Button>
+        </CardContent>
+      </Card>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="font-headline">Progress Overview</CardTitle>
+            <CardDescription>Your weight and squat progression over the last 6 months.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ProgressChart />
+          </CardContent>
+        </Card>
 
-export const useAuth = () => useContext(AuthContext);
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-headline">Your Goals</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {goals.map((goal, index) => (
+                <div key={index}>
+                  <div className="flex justify-between text-sm font-medium mb-1">
+                    <span>{goal.name}</span>
+                    <span className="text-muted-foreground">{goal.current}{goal.unit} / {goal.target}{goal.unit}</span>
+                  </div>
+                  <Progress value={(goal.current / goal.target) * 100} aria-label={`${goal.name} progress`} />
+                </div>
+              ))}
+            </CardContent>
+            <CardFooter>
+               <Button variant="outline" className="w-full">Set a New Goal</Button>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="font-headline">Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Workout</TableHead>
+                    <TableHead className="text-right">Duration</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recentWorkouts.map((workout, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{workout.date}</TableCell>
+                      <TableCell className="font-medium">{workout.type}</TableCell>
+                      <TableCell className="text-right">{workout.duration}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+          <Card>
+              <CardHeader>
+                  <CardTitle className="font-headline text-2xl text-center">Milestone Unlocked!</CardTitle>
+                  <CardDescription className="text-center">You've hit a new Personal Best on Squats!</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center justify-center">
+                  <div className="text-6xl font-bold text-primary font-headline">105kg</div>
+                  <p className="text-muted-foreground mt-2">Awesome job!</p>
+              </CardContent>
+              <CardFooter>
+                   <Button className="w-full">
+                      <Share2 className="mr-2 h-4 w-4"/>
+                      Share Achievement
+                  </Button>
+              </CardFooter>
+          </Card>
+      </div>
+    </div>
+  );
+}
