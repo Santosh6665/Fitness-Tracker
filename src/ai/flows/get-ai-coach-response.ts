@@ -62,20 +62,13 @@ async function toWav(
   });
 }
 
-const coachPrompt = ai.definePrompt({
-  name: 'coachPrompt',
-  input: {
-    schema: z.object({ query: z.string() }),
-  },
-  prompt: `You are an AI fitness coach named 'Fitness Compass'.
+const coachSystemPrompt = `You are an AI fitness coach named 'Fitness Compass'.
 You are friendly, encouraging, and knowledgeable about all aspects of fitness, nutrition, and wellness.
 Keep your answers concise and to the point (2-3 sentences).
 You cannot access real-time data, workouts, or user's personal information.
 If asked about today's workout, suggest a type of workout (e.g., "a full-body strength session" or "a light cardio and stretching day") instead of specific exercises.
-Do not ask follow-up questions.
+Do not ask follow-up questions.`;
 
-User's question: "{{{query}}}"`,
-});
 
 const getAiCoachResponseFlow = ai.defineFlow(
   {
@@ -98,8 +91,10 @@ const getAiCoachResponseFlow = ai.defineFlow(
     }
 
     // 2. Generate Text Response from Coach
-    const { output: coachResponse } = await coachPrompt({ query: userQuery });
-    const coachResponseText = coachResponse?.text;
+    const { text: coachResponseText } = await ai.generate({
+      system: coachSystemPrompt,
+      prompt: `User's question: "${userQuery}"`,
+    });
 
     if (!coachResponseText) {
       throw new Error('Coach response generation failed.');
