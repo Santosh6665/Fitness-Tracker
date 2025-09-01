@@ -25,12 +25,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Flame, Beef, Wheat, Fish, GlassWater, Upload, Sparkles, Loader2, Salad, X, Star, Dumbbell } from "lucide-react";
+import { Flame, Beef, Wheat, Fish, GlassWater, Upload, Sparkles, Loader2, Salad, X, Star, Dumbbell, Lightbulb } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { analyzeMeal, AnalyzeMealOutput } from "@/ai/flows/analyze-meal";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { recentWorkouts } from "@/lib/data";
 import { getPostWorkoutNutritionAdvice } from "@/ai/flows/get-post-workout-nutrition-advice";
+import { getNutritionInsight } from "@/ai/flows/get-nutrition-insight";
 
 
 const initialNutritionData = {
@@ -129,8 +130,10 @@ export default function NutritionPage() {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <PostWorkoutAdvisor />
+        <AiInsights />
+      </div>
 
-        <Card>
+       <Card>
             <CardHeader>
                 <CardTitle className="font-headline">Advanced Nutrition Tools</CardTitle>
                 <CardDescription>Unlock powerful AI features to help you reach your goals faster.</CardDescription>
@@ -147,7 +150,6 @@ export default function NutritionPage() {
                 </Button>
             </CardFooter>
         </Card>
-      </div>
 
     </div>
   );
@@ -387,3 +389,60 @@ function PostWorkoutAdvisor() {
     );
 }
 
+function AiInsights() {
+    const [insight, setInsight] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const { toast } = useToast();
+
+    const handleGetInsight = async () => {
+        setIsLoading(true);
+        setInsight(null);
+        try {
+            // In a real app, you might pass user data here to get more personalized insights
+            const result = await getNutritionInsight({ insightType: 'random' });
+            setInsight(result.insight);
+        } catch (error) {
+            console.error(error);
+            toast({
+                variant: 'destructive',
+                title: 'Failed to get insight',
+                description: 'Could not get an AI insight. Please try again.',
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="font-headline">AI Insights & Recommendations</CardTitle>
+                <CardDescription>Get smart tips and reminders from your AI coach.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 min-h-[178px]">
+               {isLoading ? (
+                     <div className="flex items-center justify-center text-muted-foreground p-4">
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Generating insight...
+                    </div>
+                ) : insight ? (
+                    <Alert>
+                        <Lightbulb className="h-4 w-4"/>
+                        <AlertTitle className="font-semibold">AI Insight</AlertTitle>
+                        <AlertDescription>{insight}</AlertDescription>
+                    </Alert>
+                ) : (
+                    <div className="text-center text-muted-foreground pt-4">
+                        <p>Click the button to get a personalized nutrition tip from your AI coach.</p>
+                    </div>
+                )}
+            </CardContent>
+            <CardFooter>
+                 <Button onClick={handleGetInsight} disabled={isLoading} className="w-full">
+                    {isLoading ? <Loader2 className="mr-2 animate-spin" /> : <Lightbulb className="mr-2" />}
+                    Get AI Insight
+                </Button>
+            </CardFooter>
+        </Card>
+    );
+}
