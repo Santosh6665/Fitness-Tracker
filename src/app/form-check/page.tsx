@@ -61,16 +61,18 @@ export default function FormCheckPage() {
     setFeedback(null);
 
     try {
-      const reader = new FileReader();
-      reader.readAsDataURL(videoFile);
-      reader.onloadend = async () => {
-        const base64data = reader.result as string;
-        const result = await getAiFormCorrectionFeedback({
-          exerciseName: selectedExercise,
-          videoDataUri: base64data,
-        });
-        setFeedback(result.feedback);
-      };
+      const base64data = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(videoFile);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+      });
+
+      const result = await getAiFormCorrectionFeedback({
+        exerciseName: selectedExercise,
+        videoDataUri: base64data,
+      });
+      setFeedback(result.feedback);
     } catch (error) {
       console.error(error);
       toast({
