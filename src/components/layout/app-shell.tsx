@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ReactNode } from "react";
@@ -11,6 +12,7 @@ import {
   Video,
   Mic,
   BarChart,
+  Bot,
 } from "lucide-react";
 
 import {
@@ -40,6 +42,7 @@ const navItems = [
   { href: "/nutrition", icon: Flame, label: "Nutrition" },
   { href: "/journal", icon: Mic, label: "Voice Journal" },
   { href: "/reports", icon: BarChart, label: "Reports" },
+  { href: "/ai-coach", icon: Bot, label: "AI Coach" },
 ];
 
 function PageHeader() {
