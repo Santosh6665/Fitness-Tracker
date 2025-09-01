@@ -28,14 +28,13 @@ import { useToast } from "@/hooks/use-toast";
 import { analyzeMeal, AnalyzeMealOutput } from "@/ai/flows/analyze-meal";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-const nutritionData = {
+const initialNutritionData = {
   calories: {
     label: "Calories",
     current: 1850,
     target: 2500,
     unit: "kcal",
     icon: Flame,
-    color: "bg-primary",
   },
   protein: {
     label: "Protein",
@@ -43,7 +42,6 @@ const nutritionData = {
     target: 150,
     unit: "g",
     icon: Beef,
-    color: "bg-red-500",
   },
   carbs: {
     label: "Carbohydrates",
@@ -51,7 +49,6 @@ const nutritionData = {
     target: 300,
     unit: "g",
     icon: Wheat,
-    color: "bg-yellow-500",
   },
   fats: {
     label: "Fats",
@@ -59,7 +56,6 @@ const nutritionData = {
     target: 70,
     unit: "g",
     icon: Fish,
-    color: "bg-blue-500",
   },
   water: {
     label: "Water",
@@ -67,11 +63,28 @@ const nutritionData = {
     target: 2.5,
     unit: "L",
     icon: GlassWater,
-    color: "bg-sky-500",
   },
 };
 
 export default function NutritionPage() {
+  const [nutrition, setNutrition] = useState(initialNutritionData);
+  const { toast } = useToast();
+
+  const handleLogMeal = (mealData: AnalyzeMealOutput) => {
+    setNutrition(prev => ({
+        ...prev,
+        calories: { ...prev.calories, current: prev.calories.current + mealData.calories },
+        protein: { ...prev.protein, current: prev.protein.current + mealData.protein },
+        carbs: { ...prev.carbs, current: prev.carbs.current + mealData.carbs },
+        fats: { ...prev.fats, current: prev.fats.current + mealData.fats },
+    }));
+    toast({
+        title: "Meal Logged!",
+        description: `${mealData.description} has been added to your daily log.`
+    })
+  };
+
+
   return (
     <div className="space-y-6">
       <Card>
@@ -80,10 +93,10 @@ export default function NutritionPage() {
             <CardTitle className="font-headline">Daily Nutrition</CardTitle>
             <CardDescription>Your intake for today.</CardDescription>
           </div>
-          <LogMealDialog />
+          <LogMealDialog onLogMeal={handleLogMeal} />
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Object.values(nutritionData).map((item) => (
+          {Object.values(nutrition).map((item) => (
             <Card key={item.label}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -112,7 +125,8 @@ export default function NutritionPage() {
   );
 }
 
-function LogMealDialog() {
+function LogMealDialog({ onLogMeal }: { onLogMeal: (data: AnalyzeMealOutput) => void }) {
+  const [open, setOpen] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -189,8 +203,18 @@ function LogMealDialog() {
     }
   };
 
+  const handleAddToLog = () => {
+    if (analysisResult) {
+      onLogMeal(analysisResult);
+      setOpen(false);
+    }
+  }
+
   return (
-    <Dialog onOpenChange={(open) => !open && resetState()}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) resetState();
+    }}>
       <DialogTrigger asChild>
         <Button>
           <Salad className="mr-2" /> Log Meal with AI
@@ -258,7 +282,7 @@ function LogMealDialog() {
         </div>
         <DialogFooter>
           {analysisResult ? (
-             <Button type="button" className="w-full">Add to Daily Log</Button>
+             <Button type="button" onClick={handleAddToLog} className="w-full">Add to Daily Log</Button>
           ) : (
             <Button type="button" onClick={handleAnalyzeMeal} disabled={isLoading || !imageFile} className="w-full">
               {isLoading ? 'Analyzing...' : 'Analyze Meal'}
