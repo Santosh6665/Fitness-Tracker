@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/components/auth/auth-provider';
 
 export const metadata: Metadata = {
-  title: 'Fitness Compass',
+  title: 'AI Powered Fitness Tracker',
   description: 'Your personalized guide to fitness.',
 };
 

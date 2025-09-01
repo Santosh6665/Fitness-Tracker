@@ -95,7 +95,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Link href="/" className="flex items-center gap-2">
             <Logo />
             <span className="text-lg font-semibold font-headline">
-              Fitness Compass
+              AI Powered Fitness Tracker
             </span>
           </Link>
         </SidebarHeader>

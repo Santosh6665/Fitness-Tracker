@@ -128,7 +128,7 @@ export default function OnboardingPage() {
           <form onSubmit={methods.handleSubmit(onSubmit)}>
             <CardHeader>
               <CardTitle className="font-headline">
-                {step < 5 ? `Welcome to Fitness Compass` : `Your AI Summary`}
+                {step < 5 ? `Welcome to AI Powered Fitness Tracker` : `Your AI Summary`}
               </CardTitle>
               <CardDescription>
                 {step < 5 ? `Let's personalize your fitness journey. (${step} / 4)` : `Here's what our AI thinks!`}
@@ -396,5 +396,3 @@ function AIResultDisplay({ result, isLoading }: { result: ProcessOnboardingOutpu
         </div>
     )
 }
-
-    
