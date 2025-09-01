@@ -70,6 +70,11 @@ export default function OnboardingPage() {
   const methods = useForm<OnboardingFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      age: undefined,
+      gender: undefined,
+      weight: undefined,
+      height: undefined,
+      fitnessLevel: undefined,
       goals: [],
     },
   });
@@ -191,7 +196,7 @@ function PersonalDetailsStep() {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Age</FormLabel>
-            <FormControl><Input type="number" placeholder="e.g., 25" {...field} /></FormControl>
+            <FormControl><Input type="number" placeholder="e.g., 25" {...field} value={field.value || ''} /></FormControl>
             <FormMessage />
           </FormItem>
         )}
@@ -229,7 +234,7 @@ function PersonalDetailsStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Weight (kg)</FormLabel>
-              <FormControl><Input type="number" placeholder="e.g., 70" {...field} /></FormControl>
+              <FormControl><Input type="number" placeholder="e.g., 70" {...field} value={field.value || ''} /></FormControl>
                <FormMessage />
             </FormItem>
           )}
@@ -240,7 +245,7 @@ function PersonalDetailsStep() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Height (cm)</FormLabel>
-              <FormControl><Input type="number" placeholder="e.g., 175" {...field} /></FormControl>
+              <FormControl><Input type="number" placeholder="e.g., 175" {...field} value={field.value || ''} /></FormControl>
                <FormMessage />
             </FormItem>
           )}
