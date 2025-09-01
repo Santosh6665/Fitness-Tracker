@@ -10,6 +10,7 @@ import {
   NotebookPen,
   Video,
   Mic,
+  BarChart,
 } from "lucide-react";
 
 import {
@@ -38,6 +39,7 @@ const navItems = [
   { href: "/form-check", icon: Video, label: "Form Check" },
   { href: "/nutrition", icon: Flame, label: "Nutrition" },
   { href: "/journal", icon: Mic, label: "Voice Journal" },
+  { href: "/reports", icon: BarChart, label: "Reports" },
 ];
 
 function PageHeader() {

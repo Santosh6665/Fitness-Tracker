@@ -97,3 +97,16 @@ export const exercises = [
 ];
 
 export type Exercise = (typeof exercises)[0];
+
+
+export const weeklyActivity = [
+  { day: "Mon", workouts: 1, duration: 60 },
+  { day: "Tue", workouts: 0, duration: 0 },
+  { day: "Wed", workouts: 1, duration: 45 },
+  { day: "Thu", workouts: 0, duration: 0 },
+  { day: "Fri", workouts: 1, duration: 55 },
+  { day: "Sat", workouts: 1, duration: 70 },
+  { day: "Sun", workouts: 0, duration: 0 },
+];
+
+export type WeeklyActivity = typeof weeklyActivity;
