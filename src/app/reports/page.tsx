@@ -17,6 +17,8 @@ import {
   Timer,
   Sparkles,
   Loader2,
+  Calendar,
+  CalendarDays,
 } from "lucide-react";
 import { WeeklyActivityChart } from "@/components/reports/weekly-activity-chart";
 import { weeklyActivity } from "@/lib/data";
@@ -28,6 +30,26 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+
+function DailyReport() {
+  return (
+    <div className="flex flex-col items-center justify-center h-96 border-2 border-dashed rounded-lg">
+      <Calendar className="h-12 w-12 text-muted-foreground" />
+      <h3 className="mt-4 text-xl font-semibold">Daily Reports Coming Soon</h3>
+      <p className="mt-2 text-sm text-muted-foreground">Check back later for a detailed view of your daily activity.</p>
+    </div>
+  );
+}
+
+function MonthlyReport() {
+  return (
+    <div className="flex flex-col items-center justify-center h-96 border-2 border-dashed rounded-lg">
+      <CalendarDays className="h-12 w-12 text-muted-foreground" />
+      <h3 className="mt-4 text-xl font-semibold">Monthly Reports Coming Soon</h3>
+      <p className="mt-2 text-sm text-muted-foreground">A comprehensive monthly summary of your progress is on the way.</p>
+    </div>
+  );
+}
 
 function WeeklyReport() {
   const [report, setReport] = useState<GenerateWeeklyReportOutput | null>(null);
@@ -169,16 +191,22 @@ export default function ReportsPage() {
   return (
     <Tabs defaultValue="weekly" className="space-y-4">
       <TabsList>
-        <TabsTrigger value="daily" disabled>
+        <TabsTrigger value="daily">
           Daily
         </TabsTrigger>
         <TabsTrigger value="weekly">Weekly</TabsTrigger>
-        <TabsTrigger value="monthly" disabled>
+        <TabsTrigger value="monthly">
           Monthly
         </TabsTrigger>
       </TabsList>
+      <TabsContent value="daily">
+        <DailyReport />
+      </TabsContent>
       <TabsContent value="weekly">
         <WeeklyReport />
+      </TabsContent>
+       <TabsContent value="monthly">
+        <MonthlyReport />
       </TabsContent>
     </Tabs>
   );
