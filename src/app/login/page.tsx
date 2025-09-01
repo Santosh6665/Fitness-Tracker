@@ -56,10 +56,10 @@ export default function LoginPage() {
       router.push("/");
     } catch (error: any) {
       let errorMessage = "An unknown error occurred.";
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
+      if (error.code === "auth/configuration-not-found") {
+        errorMessage = "Action required: You must enable Email/Password sign-in in the Firebase console before you can log in.";
+      } else if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
         errorMessage = "Invalid email or password. Please try again.";
-      } else if (error.code === "auth/configuration-not-found") {
-        errorMessage = "Firebase authentication is not configured correctly. Please ensure Email/Password sign-in is enabled in the Firebase console.";
       }
       toast({
         variant: "destructive",

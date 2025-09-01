@@ -69,10 +69,10 @@ export default function SignUpPage() {
       router.push("/");
     } catch (error: any) {
       let errorMessage = "An unknown error occurred.";
-      if (error.code === "auth/email-already-in-use") {
+      if (error.code === "auth/configuration-not-found") {
+        errorMessage = "Action required: You must enable Email/Password sign-in in the Firebase console before you can create an account.";
+      } else if (error.code === "auth/email-already-in-use") {
         errorMessage = "This email is already in use. Please login instead.";
-      } else if (error.code === "auth/configuration-not-found") {
-        errorMessage = "Firebase authentication is not configured correctly. Please ensure Email/Password sign-in is enabled in the Firebase console.";
       }
       toast({
         variant: "destructive",
