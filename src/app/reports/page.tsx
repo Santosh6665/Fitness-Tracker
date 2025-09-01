@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -11,18 +11,16 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  BarChart,
-  Flame,
   Activity,
-  Timer,
-  Sparkles,
-  Loader2,
   Calendar,
   CalendarDays,
+  Flame,
+  Loader2,
+  Sparkles,
+  Timer,
 } from "lucide-react";
 import { WeeklyActivityChart } from "@/components/reports/weekly-activity-chart";
 import { weeklyActivity } from "@/lib/data";
-import type { WeeklyActivity } from "@/lib/data";
 import {
   generateWeeklyReport,
   GenerateWeeklyReportOutput,
@@ -30,13 +28,51 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { AiDailyGoals } from "@/components/dashboard/ai-daily-goals";
 
 function DailyReport() {
   return (
-    <div className="flex flex-col items-center justify-center h-96 border-2 border-dashed rounded-lg">
-      <Calendar className="h-12 w-12 text-muted-foreground" />
-      <h3 className="mt-4 text-xl font-semibold">Daily Reports Coming Soon</h3>
-      <p className="mt-2 text-sm text-muted-foreground">Check back later for a detailed view of your daily activity.</p>
+    <div className="space-y-6">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Workouts</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold font-headline">1 session</div>
+            <p className="text-xs text-muted-foreground">Full Body Strength</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Active Time</CardTitle>
+            <Timer className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold font-headline">60 min</div>
+            <p className="text-xs text-muted-foreground">
+              vs. 50 min yesterday
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">
+              Calories Burned
+            </CardTitle>
+            <Flame className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold font-headline">~480 kcal</div>
+            <p className="text-xs text-muted-foreground">
+              Based on active time
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <AiDailyGoals />
     </div>
   );
 }
@@ -46,7 +82,9 @@ function MonthlyReport() {
     <div className="flex flex-col items-center justify-center h-96 border-2 border-dashed rounded-lg">
       <CalendarDays className="h-12 w-12 text-muted-foreground" />
       <h3 className="mt-4 text-xl font-semibold">Monthly Reports Coming Soon</h3>
-      <p className="mt-2 text-sm text-muted-foreground">A comprehensive monthly summary of your progress is on the way.</p>
+      <p className="mt-2 text-sm text-muted-foreground">
+        A comprehensive monthly summary of your progress is on the way.
+      </p>
     </div>
   );
 }
@@ -92,7 +130,9 @@ function WeeklyReport() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Workouts</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Workouts
+            </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -113,12 +153,16 @@ function WeeklyReport() {
             <div className="text-2xl font-bold font-headline">
               {totalDuration} min
             </div>
-            <p className="text-xs text-muted-foreground">+30 min since last week</p>
+            <p className="text-xs text-muted-foreground">
+              +30 min since last week
+            </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Calories Burned</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Calories Burned
+            </CardTitle>
             <Flame className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -147,7 +191,9 @@ function WeeklyReport() {
 
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle className="font-headline">AI-Powered Insights</CardTitle>
+            <CardTitle className="font-headline">
+              AI-Powered Insights
+            </CardTitle>
             <CardDescription>
               Your weekly summary and recommendations from our AI coach.
             </CardDescription>
@@ -161,9 +207,7 @@ function WeeklyReport() {
             ) : report ? (
               <Alert>
                 <Sparkles className="h-4 w-4" />
-                <AlertTitle className="font-headline">
-                  {report.title}
-                </AlertTitle>
+                <AlertTitle className="font-headline">{report.title}</AlertTitle>
                 <AlertDescription>
                   <p className="whitespace-pre-line">{report.summary}</p>
                 </AlertDescription>
@@ -191,13 +235,9 @@ export default function ReportsPage() {
   return (
     <Tabs defaultValue="weekly" className="space-y-4">
       <TabsList>
-        <TabsTrigger value="daily">
-          Daily
-        </TabsTrigger>
+        <TabsTrigger value="daily">Daily</TabsTrigger>
         <TabsTrigger value="weekly">Weekly</TabsTrigger>
-        <TabsTrigger value="monthly">
-          Monthly
-        </TabsTrigger>
+        <TabsTrigger value="monthly">Monthly</TabsTrigger>
       </TabsList>
       <TabsContent value="daily">
         <DailyReport />
@@ -205,7 +245,7 @@ export default function ReportsPage() {
       <TabsContent value="weekly">
         <WeeklyReport />
       </TabsContent>
-       <TabsContent value="monthly">
+      <TabsContent value="monthly">
         <MonthlyReport />
       </TabsContent>
     </Tabs>
