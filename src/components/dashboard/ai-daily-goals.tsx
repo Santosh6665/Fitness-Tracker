@@ -11,11 +11,12 @@ import { Progress } from "../ui/progress";
 
 export function AiDailyGoals() {
   const [goals, setGoals] = useState<DailyGoal[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const fetchGoals = async () => {
     setIsLoading(true);
+    setGoals([]);
     try {
       const result = await generateDailyGoals();
       setGoals(result.goals);
@@ -25,16 +26,12 @@ export function AiDailyGoals() {
         variant: "destructive",
         title: "Failed to generate goals",
         description:
-          "Could not fetch AI-powered daily goals. Please try again.",
+          "Could not fetch AI-powered daily goals. This may be due to API rate limits. Please try again later.",
       });
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchGoals();
-  }, []);
 
   return (
     <Card>
@@ -44,13 +41,13 @@ export function AiDailyGoals() {
           Your AI-generated goals for today. Crush them!
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 min-h-[148px]">
         {isLoading ? (
           <div className="flex items-center justify-center text-muted-foreground h-24">
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             Generating goals...
           </div>
-        ) : (
+        ) : goals.length > 0 ? (
           goals.map((goal, index) => (
             <div key={index}>
               <div className="flex justify-between text-sm font-medium mb-1">
@@ -67,10 +64,9 @@ export function AiDailyGoals() {
               />
             </div>
           ))
-        )}
-        {!isLoading && goals.length === 0 && (
+        ) : (
           <div className="text-center text-muted-foreground h-24 flex items-center justify-center">
-            <p>No goals generated yet. Click the button to get started!</p>
+            <p>Click the button below to generate your daily goals!</p>
           </div>
         )}
       </CardContent>
