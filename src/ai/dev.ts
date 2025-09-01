@@ -11,3 +11,4 @@ import '@/ai/flows/analyze-meal.ts';
 import '@/ai/flows/predict-future-progress.ts';
 import '@/ai/flows/generate-weekly-report.ts';
 import '@/ai/flows/get-ai-coach-response.ts';
+import '@/ai/flows/get-advanced-nutrition-advice.ts';

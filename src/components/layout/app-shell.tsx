@@ -13,6 +13,7 @@ import {
   Mic,
   BarChart,
   Bot,
+  Star,
 } from "lucide-react";
 
 import {
@@ -53,6 +54,7 @@ function PageHeader() {
 
   const getPageTitle = () => {
     if (pathname === '/onboarding') return 'Welcome';
+    if (pathname === '/nutrition-tools') return 'Advanced Nutrition Tools';
     if (!currentNav) return '';
     return currentNav.label;
   }
