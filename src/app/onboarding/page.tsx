@@ -31,6 +31,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { processOnboarding, type ProcessOnboardingOutput } from "@/ai/flows/process-onboarding";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/auth/auth-provider";
+import { updateUserProfile } from "@/services/userService";
 
 const personalDetailsSchema = z.object({
   age: z.coerce.number().min(16, "Must be at least 16").max(100),
@@ -66,6 +68,7 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [aiResult, setAiResult] = useState<ProcessOnboardingOutput | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
   
   const methods = useForm<OnboardingFormValues>({
     resolver: zodResolver(formSchema),
@@ -98,6 +101,9 @@ export default function OnboardingPage() {
     setIsLoading(true);
     setAiResult(null);
     try {
+      if (user) {
+        await updateUserProfile(user.uid, data);
+      }
       const result = await processOnboarding(data);
       setAiResult(result);
       setStep(s => s + 1);

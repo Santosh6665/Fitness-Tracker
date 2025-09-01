@@ -14,6 +14,7 @@ import {
   BarChart,
   Bot,
   Star,
+  User,
 } from "lucide-react";
 
 import {
@@ -55,6 +56,7 @@ function PageHeader() {
   const getPageTitle = () => {
     if (pathname === '/onboarding') return 'Welcome';
     if (pathname === '/nutrition-tools') return 'Advanced Nutrition Tools';
+    if (pathname === '/profile') return 'Your Profile';
     if (!currentNav) return '';
     return currentNav.label;
   }
@@ -78,7 +80,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { user, isLoading } = useAuth();
   
-  if (pathname === '/onboarding' || pathname === '/login' || pathname === '/signup') {
+  if (pathname === '/login' || pathname === '/signup') {
     return (
        <main className="flex-1">{children}</main>
     )
@@ -87,6 +89,17 @@ export function AppShell({ children }: { children: ReactNode }) {
   if (isLoading || !user) {
     return null;
   }
+  
+  if (pathname === '/onboarding' && !user) {
+    return null;
+  }
+  
+  if (pathname === '/onboarding') {
+     return (
+       <main className="flex-1">{children}</main>
+    )
+  }
+
 
   return (
     <SidebarProvider>
