@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bot, Loader2, Sparkles } from "lucide-react";
+import { Bot, Loader2, Sparkles, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import {
   Card,
@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { progressData } from "@/lib/data";
+import { progressData, recentWorkouts as staticRecentWorkouts } from "@/lib/data";
 import { ProgressChart } from "@/components/dashboard/progress-chart";
 import { predictFutureProgress } from "@/ai/flows/predict-future-progress";
 import { useToast } from "@/hooks/use-toast";
@@ -94,35 +94,38 @@ function AiForecast() {
 }
 
 function RecentActivity() {
-    const [workouts, setWorkouts] = useState<RecentWorkout[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [workouts, setWorkouts] = useState<RecentWorkout[]>(staticRecentWorkouts);
+    const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
 
-    useEffect(() => {
-        async function fetchWorkouts() {
-            setIsLoading(true);
-            try {
-                const result = await generateRecentWorkouts();
-                setWorkouts(result.workouts);
-            } catch (error) {
-                console.error("Failed to fetch recent workouts:", error);
-                toast({
-                    variant: "destructive",
-                    title: "Failed to load activity",
-                    description: "Could not fetch your recent workouts. Please try again later.",
-                });
-            } finally {
-                setIsLoading(false);
-            }
+    const fetchWorkouts = async () => {
+        setIsLoading(true);
+        try {
+            const result = await generateRecentWorkouts();
+            setWorkouts(result.workouts);
+        } catch (error) {
+            console.error("Failed to fetch recent workouts:", error);
+            toast({
+                variant: "destructive",
+                title: "Failed to load activity",
+                description: "Could not fetch your recent workouts. Please try again later.",
+            });
+        } finally {
+            setIsLoading(false);
         }
-        fetchWorkouts();
-    }, [toast]);
+    };
 
     return (
         <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="font-headline">Recent Activity</CardTitle>
-            <CardDescription>Your latest AI-generated workout log.</CardDescription>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <CardTitle className="font-headline">Recent Activity</CardTitle>
+                <CardDescription>Your latest workout log.</CardDescription>
+            </div>
+             <Button variant="outline" size="sm" onClick={fetchWorkouts} disabled={isLoading}>
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+                Refresh
+            </Button>
           </CardHeader>
           <CardContent>
              {isLoading ? (
