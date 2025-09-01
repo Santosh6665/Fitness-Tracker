@@ -128,7 +128,7 @@ function RecentActivity() {
             </Button>
           </CardHeader>
           <CardContent>
-             {isLoading && workouts === staticRecentWorkouts ? (
+             {isLoading ? (
                 <div className="flex items-center justify-center text-muted-foreground h-48">
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Loading workout history...
