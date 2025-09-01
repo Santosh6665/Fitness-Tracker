@@ -31,11 +31,12 @@ export default function DashboardPage() {
             Here's a snapshot of your fitness journey. Keep up the great work!
           </CardDescription>
         </CardHeader>
-        <CardFooter>
-          <Button asChild>
-            <Link href="/onboarding">Personalize Your Plan (Onboarding Demo)</Link>
-          </Button>
-        </CardFooter>
+        <CardContent>
+            <p className="mb-4">Ready to fine-tune your fitness plan? Complete our quick onboarding questionnaire to get personalized recommendations from our AI coach.</p>
+             <Button asChild>
+                <Link href="/onboarding">Personalize Your Plan</Link>
+            </Button>
+        </CardContent>
       </Card>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="lg:col-span-2">
