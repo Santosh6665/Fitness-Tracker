@@ -23,9 +23,13 @@ import {
   SidebarInset,
   SidebarTrigger,
   useSidebar,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Logo } from "@/components/icons/logo";
 import { cn } from "@/lib/utils";
+import { UserNav } from "@/components/layout/user-nav";
+import { useAuth } from "@/components/auth/auth-provider";
+import { Button } from "../ui/button";
 
 const navItems = [
   { href: "/", icon: LayoutDashboard, label: "Dashboard" },
@@ -40,10 +44,12 @@ function PageHeader() {
   const { isMobile } = useSidebar();
   const pathname = usePathname();
   const currentNav = navItems.find((item) => item.href === pathname);
+  const { user } = useAuth();
 
   const getPageTitle = () => {
     if (pathname === '/onboarding') return 'Welcome';
-    return currentNav?.label;
+    if (!currentNav) return '';
+    return currentNav.label;
   }
 
   return (
@@ -54,17 +60,25 @@ function PageHeader() {
         "-ml-14": !isMobile
       })} />
       <h1 className="text-xl font-semibold font-headline">{getPageTitle()}</h1>
+      <div className="ml-auto">
+        {user && <UserNav user={user} />}
+      </div>
     </header>
   );
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const { user, isLoading } = useAuth();
   
-  if (pathname === '/onboarding') {
+  if (pathname === '/onboarding' || pathname === '/login' || pathname === '/signup') {
     return (
-       <main className="flex-1 p-4 sm:px-6 sm:py-4 bg-background">{children}</main>
+       <main className="flex-1">{children}</main>
     )
+  }
+
+  if (isLoading || !user) {
+    return null;
   }
 
   return (

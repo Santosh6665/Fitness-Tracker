@@ -30,6 +30,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const formSchema = z
   .object({
@@ -48,6 +49,7 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const [configError, setConfigError] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,6 +62,7 @@ export default function SignUpPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    setConfigError(false);
     try {
       await createUserWithEmailAndPassword(
         auth,
@@ -70,7 +73,8 @@ export default function SignUpPage() {
     } catch (error: any) {
       let errorMessage = "An unknown error occurred.";
       if (error.code === "auth/configuration-not-found") {
-        errorMessage = "Action required: You must enable Email/Password sign-in in the Firebase console before you can create an account.";
+        setConfigError(true);
+        errorMessage = "Firebase configuration is missing or incorrect. See details below.";
       } else if (error.code === "auth/email-already-in-use") {
         errorMessage = "This email is already in use. Please login instead.";
       }
@@ -86,7 +90,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="flex h-screen items-center justify-center bg-background">
+    <div className="flex h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
@@ -95,6 +99,15 @@ export default function SignUpPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {configError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTitle>Action Required</AlertTitle>
+              <AlertDescription>
+                To fix this, you must enable Email/Password sign-in in the
+                Firebase console for your project.
+              </AlertDescription>
+            </Alert>
+          )}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
