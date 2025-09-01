@@ -1,4 +1,5 @@
 import { Share2 } from "lucide-react";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -30,6 +31,11 @@ export default function DashboardPage() {
             Here's a snapshot of your fitness journey. Keep up the great work!
           </CardDescription>
         </CardHeader>
+        <CardFooter>
+          <Button asChild>
+            <Link href="/onboarding">Personalize Your Plan (Onboarding Demo)</Link>
+          </Button>
+        </CardFooter>
       </Card>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="lg:col-span-2">
