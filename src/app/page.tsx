@@ -128,37 +128,30 @@ function RecentActivity() {
             </Button>
           </CardHeader>
           <CardContent>
-             {isLoading && workouts.length === 0 ? (
-                <div className="flex items-center justify-center text-muted-foreground h-48">
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Loading workout history...
-                </div>
-             ) : (
-                 <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Workout</TableHead>
-                      <TableHead className="text-right">Duration</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {workouts.map((workout, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="text-xs sm:text-sm">
-                          {workout.date}
-                        </TableCell>
-                        <TableCell className="font-medium text-xs sm:text-sm">
-                          {workout.type}
-                        </TableCell>
-                        <TableCell className="text-right text-xs sm:text-sm">
-                          {workout.duration}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-            )}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Workout</TableHead>
+                  <TableHead className="text-right">Duration</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {workouts.map((workout, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="text-xs sm:text-sm">
+                      {workout.date}
+                    </TableCell>
+                    <TableCell className="font-medium text-xs sm:text-sm">
+                      {workout.type}
+                    </TableCell>
+                    <TableCell className="text-right text-xs sm:text-sm">
+                      {workout.duration}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
     )
