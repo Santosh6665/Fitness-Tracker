@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview This file defines a Genkit flow for processing voice journal entries.
@@ -81,17 +82,15 @@ const processVoiceJournalFlow = ai.defineFlow(
   async (input) => {
     // 1. Transcribe Audio
     const { text: transcription } = await ai.generate({
-      model: 'googleai/gemini-2.5-flash-preview-stt',
+      model: 'googleai/gemini-1.5-flash-latest',
       prompt: [
+        { text: 'Transcribe the following audio.'},
         {
           media: {
             url: input.audioDataUri,
           },
         },
       ],
-      config: {
-        responseModalities: ['TEXT'],
-      },
     });
 
     if (!transcription) {

@@ -86,9 +86,11 @@ const getAiCoachResponseFlow = ai.defineFlow(
   async (input) => {
     // 1. Transcribe Audio to Text
     const { text: userQuery } = await ai.generate({
-      model: 'googleai/gemini-2.5-flash-preview-stt',
-      prompt: [{ media: { url: input.audioDataUri } }],
-      config: { responseModalities: ['TEXT'] },
+      model: 'googleai/gemini-1.5-flash-latest',
+      prompt: [
+        { text: 'Transcribe the following audio.'},
+        { media: { url: input.audioDataUri } }
+      ],
     });
 
     if (!userQuery) {
