@@ -1,7 +1,7 @@
 
 "use client";
 
-import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, Bar, BarChart } from "recharts";
 
 import {
   ChartContainer,
@@ -12,6 +12,7 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import { progressData } from "@/lib/data";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const chartConfig = {
   weight: {
@@ -33,6 +34,38 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ProgressChart() {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+         <BarChart 
+          accessibilityLayer 
+          data={progressData}
+          margin={{
+            top: 20,
+            right: 10,
+            left: -20,
+            bottom: 0,
+          }}
+          >
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="month"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            tickFormatter={(value) => value.slice(0, 3)}
+          />
+          <YAxis dataKey="weight" tickLine={false} axisLine={false} tickMargin={8} domain={['dataMin - 10', 'dataMax + 10']} />
+          <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+          <Bar dataKey="weight" fill="var(--color-weight)" radius={4} />
+        </BarChart>
+      </ChartContainer>
+    );
+  }
+
+
   return (
     <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
       <LineChart
