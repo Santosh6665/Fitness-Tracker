@@ -58,7 +58,7 @@ export default function LoginPage() {
       let errorMessage = "An unknown error occurred.";
       if (error.code === "auth/configuration-not-found") {
         errorMessage = "Action required: You must enable Email/Password sign-in in the Firebase console before you can log in.";
-      } else if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
+      } else if (error.code === "auth/invalid-credential") {
         errorMessage = "Invalid email or password. Please try again.";
       }
       toast({
