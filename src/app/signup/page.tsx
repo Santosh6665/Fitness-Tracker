@@ -72,7 +72,7 @@ export default function SignUpPage() {
       if (error.code === "auth/email-already-in-use") {
         errorMessage = "This email is already in use. Please login instead.";
       } else if (error.code === "auth/configuration-not-found") {
-        errorMessage = "Firebase authentication is not configured correctly. Please ensure the API key is valid and Email/Password sign-in is enabled in the Firebase console.";
+        errorMessage = "Firebase authentication is not configured correctly. Please ensure Email/Password sign-in is enabled in the Firebase console.";
       }
       toast({
         variant: "destructive",
