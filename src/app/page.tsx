@@ -21,12 +21,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { progressData, recentWorkouts } from "@/lib/data";
+import { progressData } from "@/lib/data";
 import { ProgressChart } from "@/components/dashboard/progress-chart";
 import { predictFutureProgress } from "@/ai/flows/predict-future-progress";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AiDailyGoals } from "@/components/dashboard/ai-daily-goals";
+import { generateRecentWorkouts, type RecentWorkout } from "@/ai/flows/generate-recent-workouts";
 
 function AiForecast() {
   const [prediction, setPrediction] = useState<string | null>(null);
@@ -92,6 +93,74 @@ function AiForecast() {
   );
 }
 
+function RecentActivity() {
+    const [workouts, setWorkouts] = useState<RecentWorkout[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const { toast } = useToast();
+
+    useEffect(() => {
+        async function fetchWorkouts() {
+            setIsLoading(true);
+            try {
+                const result = await generateRecentWorkouts();
+                setWorkouts(result.workouts);
+            } catch (error) {
+                console.error("Failed to fetch recent workouts:", error);
+                toast({
+                    variant: "destructive",
+                    title: "Failed to load activity",
+                    description: "Could not fetch your recent workouts. Please try again later.",
+                });
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchWorkouts();
+    }, [toast]);
+
+    return (
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="font-headline">Recent Activity</CardTitle>
+            <CardDescription>Your latest AI-generated workout log.</CardDescription>
+          </CardHeader>
+          <CardContent>
+             {isLoading ? (
+                <div className="flex items-center justify-center text-muted-foreground h-48">
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Loading workout history...
+                </div>
+             ) : (
+                 <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Workout</TableHead>
+                      <TableHead className="text-right">Duration</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {workouts.map((workout, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="text-xs sm:text-sm">
+                          {workout.date}
+                        </TableCell>
+                        <TableCell className="font-medium text-xs sm:text-sm">
+                          {workout.type}
+                        </TableCell>
+                        <TableCell className="text-right text-xs sm:text-sm">
+                          {workout.duration}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+            )}
+          </CardContent>
+        </Card>
+    )
+}
+
 export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
@@ -132,37 +201,7 @@ export default function DashboardPage() {
         </div>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="font-headline">Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Workout</TableHead>
-                  <TableHead className="text-right">Duration</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentWorkouts.map((workout, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="text-xs sm:text-sm">
-                      {workout.date}
-                    </TableCell>
-                    <TableCell className="font-medium text-xs sm:text-sm">
-                      {workout.type}
-                    </TableCell>
-                    <TableCell className="text-right text-xs sm:text-sm">
-                      {workout.duration}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        <RecentActivity />
         <div className="space-y-6">
           <AiForecast />
         </div>
