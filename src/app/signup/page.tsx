@@ -50,6 +50,7 @@ export default function SignUpPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [configError, setConfigError] = useState(false);
+  const [emailInUseError, setEmailInUseError] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,6 +64,7 @@ export default function SignUpPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setConfigError(false);
+    setEmailInUseError(false);
     try {
       await createUserWithEmailAndPassword(
         auth,
@@ -76,6 +78,7 @@ export default function SignUpPage() {
         setConfigError(true);
         errorMessage = "Firebase configuration is missing or incorrect. See details below.";
       } else if (error.code === "auth/email-already-in-use") {
+        setEmailInUseError(true);
         errorMessage = "This email is already in use. Please login instead.";
       }
       toast({
@@ -105,6 +108,18 @@ export default function SignUpPage() {
               <AlertDescription>
                 To fix this, you must enable Email/Password sign-in in the
                 Firebase console for your project.
+              </AlertDescription>
+            </Alert>
+          )}
+           {emailInUseError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTitle>Email Already Registered</AlertTitle>
+              <AlertDescription>
+                This email address is already in use. Please{' '}
+                <Link href="/login" className="underline">
+                  login
+                </Link>{' '}
+                instead.
               </AlertDescription>
             </Alert>
           )}
