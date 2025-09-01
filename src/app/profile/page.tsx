@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAuth } from "@/components/auth/auth-provider";
@@ -73,27 +73,30 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
-    if (user) {
-        setIsFetching(true);
-        getUserProfile(user.uid)
-            .then((profile) => {
-                form.reset({
-                    displayName: profile?.displayName || user.displayName || "",
-                    age: profile?.age,
-                    gender: profile?.gender,
-                    weight: profile?.weight,
-                    height: profile?.height,
-                    fitnessLevel: profile?.fitnessLevel,
-                    goals: profile?.goals || [],
-                });
-            })
-            .catch(() => {
-                 toast({ variant: "destructive", title: "Failed to load profile." });
-            })
-            .finally(() => {
+    async function fetchProfile() {
+        if (user) {
+            try {
+                const profile = await getUserProfile(user.uid);
+                if (profile) {
+                    form.reset({
+                        displayName: profile.displayName || user.displayName || "",
+                        age: profile.age,
+                        gender: profile.gender,
+                        weight: profile.weight,
+                        height: profile.height,
+                        fitnessLevel: profile.fitnessLevel,
+                        goals: profile.goals || [],
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                toast({ variant: "destructive", title: "Failed to load profile." });
+            } finally {
                 setIsFetching(false);
-            })
+            }
+        }
     }
+    fetchProfile();
   }, [user, form, toast]);
 
 
@@ -150,7 +153,7 @@ export default function ProfilePage() {
                 <FormItem>
                   <FormLabel>Age</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 25" {...field} />
+                    <Input type="number" placeholder="e.g., 25" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -194,7 +197,7 @@ export default function ProfilePage() {
                   <FormItem>
                     <FormLabel>Weight (kg)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 70" {...field} />
+                      <Input type="number" placeholder="e.g., 70" {...field} value={field.value ?? ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -207,7 +210,7 @@ export default function ProfilePage() {
                   <FormItem>
                     <FormLabel>Height (cm)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 175" {...field} />
+                      <Input type="number" placeholder="e.g., 175" {...field} value={field.value ?? ''}/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
