@@ -39,7 +39,7 @@ function AiForecast() {
     try {
       const result = await predictFutureProgress({ history: progressData });
       setPrediction(result.prediction);
-    } catch (error) => {
+    } catch (error) {
       console.error("Failed to get forecast:", error);
       toast({
         variant: "destructive",
