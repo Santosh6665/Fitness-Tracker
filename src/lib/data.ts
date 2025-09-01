@@ -13,7 +13,6 @@ export const recentWorkouts = [
   { date: format(today, 'yyyy-MM-dd'), type: "Full Body Strength", duration: "60 min" },
   { date: format(subDays(today, 2), 'yyyy-MM-dd'), type: "Cardio & Core", duration: "45 min" },
   { date: format(subDays(today, 4), 'yyyy-MM-dd'), type: "Upper Body Power", duration: "55 min" },
-  { date: format(subDays(today, 6), 'yyyy-MM-dd'), type: "Leg Day", duration: "70 min" },
 ];
 
 export const progressData = [
