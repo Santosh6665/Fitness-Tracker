@@ -19,7 +19,7 @@ const ProgressDataItemSchema = z.object({
   squat: z.number(),
 });
 
-export const PredictFutureProgressInputSchema = z.object({
+const PredictFutureProgressInputSchema = z.object({
   history: z.array(ProgressDataItemSchema).describe("The user's historical weight and squat progression data over several months."),
 });
 export type PredictFutureProgressInput = z.infer<typeof PredictFutureProgressInputSchema>;
