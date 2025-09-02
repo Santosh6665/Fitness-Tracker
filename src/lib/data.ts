@@ -75,7 +75,7 @@ export const exercises = [
     muscleGroup: "Legs",
     equipment: "Dumbbells",
     instructions: "Stand with your feet together, holding a dumbbell in each hand. Step forward with one leg and lower your hips until both knees are bent at a 90-degree angle. Push back to the starting position and repeat with the other leg.",
-    videoUrl: "https://www.youtube.com/embed/Z2n58m2i4jg",
+    videoUrl: "https://www.youtube.com/embed/D7KaXogCq5I",
     imageUrl: "https://picsum.photos/seed/lunges/600/400",
     dataAiHint: "lunge exercise"
   },
@@ -93,7 +93,7 @@ export const exercises = [
     muscleGroup: "Arms",
     equipment: "Dumbbells",
     instructions: "Stand or sit holding a dumbbell in each hand with an underhand grip. Curl the weights up towards your shoulders, keeping your elbows stationary. Squeeze your biceps at the top, then lower the weights back down slowly.",
-    videoUrl: "https://www.youtube.com/embed/kwG2ZsmY2-k",
+    videoUrl: "https://www.youtube.com/embed/ykJmrZ5v0Oo",
     imageUrl: "https://picsum.photos/seed/bicep-curl/600/400",
     dataAiHint: "bicep curl"
   }
