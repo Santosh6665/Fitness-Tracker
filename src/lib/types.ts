@@ -5,7 +5,7 @@ export type Exercise = (typeof exercises)[0];
 
 export const userProfileSchema = z.object({
     id: z.string(),
-    email: z.string().email(),
+    email: z.string().email().optional(),
     displayName: z.string().optional(),
     age: z.number().optional(),
     gender: z.enum(["male", "female", "other"]).optional(),
