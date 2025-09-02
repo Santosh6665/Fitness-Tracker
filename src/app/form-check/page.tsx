@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -21,7 +22,6 @@ export default function FormCheckPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Clean up the object URL to avoid memory leaks
     return () => {
       if (videoPreview) {
         URL.revokeObjectURL(videoPreview);
@@ -32,7 +32,7 @@ export default function FormCheckPage() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      if (file.size > 10 * 1024 * 1024) {
         toast({
             variant: "destructive",
             title: "File too large",

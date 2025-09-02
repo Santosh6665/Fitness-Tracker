@@ -1,15 +1,5 @@
+
 'use server';
-/**
- * @fileOverview This file defines a Genkit flow for generating personalized workout plans.
- *
- * The flow takes user's fitness goals, experience level, and available equipment as input,
- * and generates a personalized workout plan.
- *
- * @fileOverview
- * - `generatePersonalizedWorkoutPlan`: The main function to trigger the workout plan generation flow.
- * - `PersonalizedWorkoutPlanInput`: Interface defining the input schema for the flow.
- * - `PersonalizedWorkoutPlanOutput`: Interface defining the output schema for the flow.
- */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
@@ -70,7 +60,7 @@ const generatePersonalizedWorkoutPlanFlow = ai.defineFlow(
     name: 'generatePersonalizedWorkoutPlanFlow',
     inputSchema: PersonalizedWorkoutPlanInputSchema,
     outputSchema: PersonalizedWorkoutPlanOutputSchema,
-    model: 'gemini-2.5-flash-lite',
+    model: 'gemini-1.5-flash-latest',
   },
   async input => {
     const {output} = await prompt(input);

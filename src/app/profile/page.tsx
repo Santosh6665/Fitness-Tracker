@@ -96,7 +96,6 @@ export default function ProfilePage() {
           setIsFetching(false);
         }
       } else if (!isAuthLoading) {
-        // If auth is done loading and there's no user, stop fetching.
         setIsFetching(false);
       }
     }
@@ -371,7 +370,3 @@ function ProfileSkeleton() {
       </div>
     );
   }
-
-    
-
-    

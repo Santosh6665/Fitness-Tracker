@@ -9,7 +9,6 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 
-// Static data for demonstration
 const progressData = [
   { month: "Jan", weight: 0 },
   { month: "Feb", weight: -1 },
@@ -27,7 +26,6 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function WeightProgressChart({ userWeight }: { userWeight?: number }) {
-  // Use the user's current weight from their profile as the baseline
   const chartData = progressData.map(item => ({
     ...item,
     weight: userWeight ? userWeight + item.weight : 75 + item.weight,

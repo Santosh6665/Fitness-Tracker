@@ -1,11 +1,5 @@
 
 'use server';
-/**
- * @fileOverview This file defines a Genkit flow for processing user onboarding data.
- *
- * It takes the user's personal details, fitness level, and goals to create
- * a personalized welcome message and initial summary.
- */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';

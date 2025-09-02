@@ -1,14 +1,5 @@
 
 'use server';
-/**
- * @fileOverview A Genkit flow for predicting future fitness progress.
- *
- * This flow analyzes historical fitness data to forecast future trends.
- *
- * - predictFutureProgress: Generates a prediction based on progress data.
- * - PredictFutureProgressInput: The input type for the flow.
- * - PredictFutureProgressOutput: The output type for the flow.
- */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
@@ -59,7 +50,7 @@ const predictFutureProgressFlow = ai.defineFlow(
     name: 'predictFutureProgressFlow',
     inputSchema: PredictFutureProgressInputSchema,
     outputSchema: PredictFutureProgressOutputSchema,
-    model: 'gemini-2.5-flash-lite',
+    model: 'gemini-1.5-flash-latest',
   },
   async (input) => {
     const { output } = await prompt(input);

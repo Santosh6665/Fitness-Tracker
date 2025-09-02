@@ -1,10 +1,5 @@
 
 'use server';
-/**
- * @fileOverview A Genkit flow for providing contextual nutrition insights.
- *
- * This flow can generate various types of nutritional tips and recommendations.
- */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';

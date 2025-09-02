@@ -9,7 +9,6 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 
-// This is static example data. In a real app, you'd fetch this.
 const strengthData = [
   { month: "Jan", squat: 80, bench: 60 },
   { month: "Feb", squat: 85, bench: 65 },

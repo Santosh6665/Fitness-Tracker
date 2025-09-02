@@ -1,12 +1,5 @@
 
 'use server';
-/**
- * @fileOverview An AI agent that provides feedback on exercise form using video analysis.
- *
- * - getAiFormCorrectionFeedback - A function that handles the exercise form correction process.
- * - GetAiFormCorrectionFeedbackInput - The input type for the getAiFormCorrectionFeedback function.
- * - GetAiFormCorrectionFeedbackOutput - The return type for the getAiFormCorrectionFeedback function.
- */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
@@ -51,7 +44,7 @@ const getAiFormCorrectionFeedbackFlow = ai.defineFlow(
     name: 'getAiFormCorrectionFeedbackFlow',
     inputSchema: GetAiFormCorrectionFeedbackInputSchema,
     outputSchema: GetAiFormCorrectionFeedbackOutputSchema,
-    model: 'gemini-2.5-flash-lite',
+    model: 'gemini-1.5-flash-latest',
   },
   async input => {
     const {output} = await prompt(input);

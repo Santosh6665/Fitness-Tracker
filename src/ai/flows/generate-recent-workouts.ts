@@ -1,15 +1,8 @@
 
 'use server';
-/**
- * @fileOverview A Genkit flow for generating a plausible list of recent workouts.
- *
- * - generateRecentWorkouts - A function that generates a list of recent workouts.
- * - RecentWorkoutsOutput - The return type for the generateRecentWorkouts function.
- * - RecentWorkout - The type for a single recent workout.
- */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
 const RecentWorkoutSchema = z.object({
     date: z.string().describe("The date of the workout in 'YYYY-MM-DD' format."),

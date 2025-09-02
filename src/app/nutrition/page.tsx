@@ -38,14 +38,14 @@ const initialNutritionData = {
   calories: {
     label: "Calories",
     current: 1850,
-    target: 2400,
+    target: 2500,
     unit: "kcal",
     icon: Flame,
   },
   protein: {
     label: "Protein",
     current: 120,
-    target: 140,
+    target: 150,
     unit: "g",
     icon: Beef,
   },
@@ -66,7 +66,7 @@ const initialNutritionData = {
   water: {
     label: "Water",
     current: 1.5,
-    target: 3.0,
+    target: 2.5,
     unit: "L",
     icon: GlassWater,
   },
@@ -165,7 +165,6 @@ function LogMealDialog({ onLogMeal }: { onLogMeal: (data: AnalyzeMealOutput) => 
   const { toast } = useToast();
 
   useEffect(() => {
-    // Clean up the object URL to avoid memory leaks
     return () => {
       if (imagePreview) {
         URL.revokeObjectURL(imagePreview);
@@ -184,7 +183,7 @@ function LogMealDialog({ onLogMeal }: { onLogMeal: (data: AnalyzeMealOutput) => 
     resetState();
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) {
         toast({
           variant: "destructive",
           title: "File too large",
@@ -398,7 +397,6 @@ function AiInsights() {
         setIsLoading(true);
         setInsight(null);
         try {
-            // In a real app, you might pass user data here to get more personalized insights
             const result = await getNutritionInsight({ insightType: 'random' });
             setInsight(result.insight);
         } catch (error) {

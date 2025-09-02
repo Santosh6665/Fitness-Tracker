@@ -1,10 +1,5 @@
 
 'use server';
-/**
- * @fileOverview A Genkit flow for providing post-workout nutrition advice.
- *
- * This flow takes a workout type and returns a relevant nutrition tip.
- */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';

@@ -1,10 +1,5 @@
 
 'use server';
-/**
- * @fileOverview This file defines a Genkit flow for processing voice journal entries.
- *
- * It transcribes the user's audio, analyzes the mood, and provides a summary.
- */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
@@ -80,9 +75,8 @@ const processVoiceJournalFlow = ai.defineFlow(
     outputSchema: ProcessVoiceJournalOutputSchema,
   },
   async (input) => {
-    // 1. Transcribe Audio
     const { text: transcription } = await ai.generate({
-      model: 'googleai/gemini-2.5-flash-lite',
+      model: 'googleai/gemini-1.5-flash-latest',
       prompt: [
         { text: 'Transcribe the following audio.'},
         {
@@ -97,7 +91,6 @@ const processVoiceJournalFlow = ai.defineFlow(
       throw new Error('Audio transcription failed.');
     }
 
-    // 2. Analyze mood and summarize
     const { output } = await moodAnalysisPrompt({ transcription });
     if (!output) {
       throw new Error('Mood analysis failed.');

@@ -1,12 +1,5 @@
 
 'use server';
-/**
- * @fileOverview A Genkit flow for generating a weekly fitness report.
- *
- * - generateWeeklyReport: Generates a summary and title for a user's weekly activity.
- * - GenerateWeeklyReportInput: The input type for the flow.
- * - GenerateWeeklyReportOutput: The output type for the flow.
- */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';

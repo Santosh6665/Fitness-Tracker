@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -94,7 +95,6 @@ export default function NutritionToolsPage() {
   return (
     <div className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Supplement Suggestions Card */}
             <Card>
                 <CardHeader>
                     <CardTitle className="font-headline flex items-center gap-2"><Pill />Supplement Suggestions</CardTitle>
@@ -117,7 +117,6 @@ export default function NutritionToolsPage() {
                 </CardFooter>
             </Card>
 
-             {/* Recipe Recommender Card */}
              <Card>
                 <CardHeader>
                     <CardTitle className="font-headline flex items-center gap-2"><UtensilsCrossed />Recipe Recommender</CardTitle>
@@ -138,7 +137,6 @@ export default function NutritionToolsPage() {
                 </CardFooter>
             </Card>
 
-             {/* Meal Prep Planner Card */}
              <Card>
                 <CardHeader>
                     <CardTitle className="font-headline flex items-center gap-2"><ShoppingCart />Meal Prep Planner</CardTitle>

@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const isUnauthenticatedRoute = unauthenticatedRoutes.includes(pathname);
   if (!user && !isUnauthenticatedRoute) {
-    return null; // or a loading spinner
+    return null; 
   }
 
   return (

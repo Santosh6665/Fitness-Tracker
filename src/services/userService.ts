@@ -3,10 +3,6 @@ import { db } from "@/firebase/client";
 import { UserProfile, userProfileSchema } from "@/lib/types";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
-/**
- * Creates or updates a user's profile in Firestore.
- * This function is typically called after a user signs up.
- */
 export async function createUserProfile(
   userId: string,
   data: Omit<UserProfile, "id">
@@ -22,9 +18,6 @@ export async function createUserProfile(
   }
 }
 
-/**
- * Retrieves a user's profile from Firestore.
- */
 export async function getUserProfile(
   userId: string
 ): Promise<UserProfile | null> {
@@ -34,7 +27,6 @@ export async function getUserProfile(
 
     if (docSnap.exists()) {
       const data = docSnap.data();
-      // Validate data with Zod schema
       return userProfileSchema.parse({ ...data, id: userId });
     } else {
       console.log("No such document!");
@@ -46,9 +38,6 @@ export async function getUserProfile(
   }
 }
 
-/**
- * Updates a user's profile in Firestore.
- */
 export async function updateUserProfile(
   userId: string,
   data: Partial<Omit<UserProfile, "id">>

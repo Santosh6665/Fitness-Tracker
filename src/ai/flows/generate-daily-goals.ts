@@ -1,15 +1,8 @@
 
 'use server';
-/**
- * @fileOverview A Genkit flow for generating dynamic daily fitness goals.
- *
- * - generateDailyGoals - A function that generates a set of daily goals.
- * - DailyGoalsOutput - The return type for the generateDailyGoals function.
- * - DailyGoal - The type for a single daily goal.
- */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
 const DailyGoalSchema = z.object({
     name: z.string().describe("The name of the goal (e.g., 'Walk 10,000 steps')."),

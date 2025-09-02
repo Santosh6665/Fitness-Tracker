@@ -1,11 +1,5 @@
 
 'use server';
-/**
- * @fileOverview This file defines a Genkit flow for a voice-based AI fitness coach.
- *
- * It transcribes user audio, generates a text response from an AI coach,
- * and converts that response back to audio.
- */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
@@ -77,9 +71,8 @@ const getAiCoachResponseFlow = ai.defineFlow(
     outputSchema: GetAiCoachResponseOutputSchema,
   },
   async (input) => {
-    // 1. Transcribe Audio to Text
     const { text: userQuery } = await ai.generate({
-      model: 'googleai/gemini-2.5-flash-lite',
+      model: 'googleai/gemini-1.5-flash-latest',
       prompt: [
         { text: 'Transcribe the following audio.'},
         { media: { url: input.audioDataUri } }
@@ -90,7 +83,6 @@ const getAiCoachResponseFlow = ai.defineFlow(
       throw new Error('Audio transcription failed.');
     }
 
-    // 2. Generate Text Response from Coach
     const { text: coachResponseText } = await ai.generate({
       system: coachSystemPrompt,
       prompt: `User's question: "${userQuery}"`,
@@ -100,7 +92,6 @@ const getAiCoachResponseFlow = ai.defineFlow(
       throw new Error('Coach response generation failed.');
     }
 
-    // 3. Convert Coach's Text Response to Speech
     const { media: audioResponse } = await ai.generate({
       model: 'googleai/gemini-2.5-flash-preview-tts',
       prompt: coachResponseText,

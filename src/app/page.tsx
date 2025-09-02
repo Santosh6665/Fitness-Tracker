@@ -59,10 +59,6 @@ function AiForecast() {
     }
   };
 
-  useEffect(() => {
-    handleGetForecast();
-  }, []);
-
   return (
     <Card>
       <CardHeader>
@@ -86,7 +82,7 @@ function AiForecast() {
         ) : (
            <div className="text-center text-muted-foreground">
             <Bot className="h-8 w-8 mx-auto mb-2" />
-            <p>Could not generate forecast. Try again later.</p>
+            <p>Click the button to generate a forecast.</p>
           </div>
         )}
       </CardContent>
@@ -97,7 +93,7 @@ function AiForecast() {
           ) : (
             <Sparkles className="mr-2 h-4 w-4" />
           )}
-          Regenerate Forecast
+          Generate Forecast
         </Button>
       </CardFooter>
     </Card>
@@ -216,7 +212,6 @@ function ProgressOverview() {
             );
         }
 
-        // Prioritize weight loss chart if both goals are selected
         if (hasWeightLossGoal) {
             return <WeightProgressChart userWeight={profile.weight} />;
         }
@@ -225,7 +220,6 @@ function ProgressOverview() {
             return <StrengthProgressChart />;
         }
         
-        // Default chart if no specific goal matches
         return <StrengthProgressChart />;
     };
     

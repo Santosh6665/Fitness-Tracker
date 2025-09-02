@@ -63,7 +63,6 @@ export default function AiCoachPage() {
               { speaker: 'coach', text: result.coachResponseText, audioUri: result.coachResponseAudioUri }
             ]);
             setRecordingState('finished');
-            // Auto-play the coach's response
             if (audioRef.current && result.coachResponseAudioUri) {
                 audioRef.current.src = result.coachResponseAudioUri;
                 audioRef.current.play().catch(e => console.error("Audio autoplay failed:", e));

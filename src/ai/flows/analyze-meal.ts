@@ -1,12 +1,5 @@
 
 'use server';
-/**
- * @fileOverview An AI agent that analyzes a meal from a photo and returns nutritional information.
- *
- * - analyzeMeal - A function that handles the meal analysis process.
- * - AnalyzeMealInput - The input type for the analyzeMeal function.
- * - AnalyzeMealOutput - The return type for the analyzeMeal function.
- */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';

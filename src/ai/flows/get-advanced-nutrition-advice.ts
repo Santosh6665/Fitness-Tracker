@@ -1,10 +1,5 @@
+
 'use server';
-/**
- * @fileOverview A Genkit flow for providing advanced nutritional advice.
- *
- * This flow can handle requests for supplement suggestions, recipe recommendations,
- * and creating shopping lists from meal plans.
- */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';

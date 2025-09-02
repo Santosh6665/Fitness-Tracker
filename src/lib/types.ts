@@ -1,3 +1,4 @@
+
 import { type exercises } from "./data";
 import { z } from "zod";
 

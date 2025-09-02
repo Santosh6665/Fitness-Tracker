@@ -102,7 +102,7 @@ function WeeklyReport() {
     (sum, day) => sum + day.duration,
     0
   );
-  const totalCalories = totalDuration * 8; // Simple estimation
+  const totalCalories = totalDuration * 8; 
 
   const handleGenerateReport = async () => {
     setIsLoading(true);
