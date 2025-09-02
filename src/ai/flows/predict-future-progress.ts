@@ -66,4 +66,3 @@ const predictFutureProgressFlow = ai.defineFlow(
     return output!;
   }
 );
-
