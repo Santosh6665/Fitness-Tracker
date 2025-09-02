@@ -39,7 +39,7 @@ export const exercises = [
     muscleGroup: "Legs",
     equipment: "Barbell, Squat Rack",
     instructions: "Stand with your feet shoulder-width apart, with the barbell resting on your upper back. Keeping your chest up and back straight, lower your body as if sitting in a chair. Go as low as you can comfortably, ideally until your thighs are parallel to the floor. Push through your heels to return to the starting position.",
-    videoUrl: "https://www.youtube.com/embed/ultWZbEVNpE",
+    videoUrl: "https://www.youtube.com/embed/bEv6CCg2BC8",
     imageUrl: "https://picsum.photos/seed/squat/600/400",
     dataAiHint: "man squatting"
   },
@@ -66,7 +66,7 @@ export const exercises = [
     muscleGroup: "Back",
     equipment: "Pull-up Bar",
     instructions: "Grab the pull-up bar with your palms facing away from you and your hands shoulder-width apart. Hang with your arms fully extended. Pull your body up until your chin is over the bar. Lower yourself back down with control.",
-    videoUrl: "https://www.youtube.com/embed/poyr8KenUfc",
+    videoUrl: "https://www.youtube.com/embed/aK6G6A92pYw",
     imageUrl: "https://picsum.photos/seed/pull-up/600/400",
     dataAiHint: "man pullup"
   },
@@ -75,7 +75,7 @@ export const exercises = [
     muscleGroup: "Legs",
     equipment: "Dumbbells",
     instructions: "Stand with your feet together, holding a dumbbell in each hand. Step forward with one leg and lower your hips until both knees are bent at a 90-degree angle. Push back to the starting position and repeat with the other leg.",
-    videoUrl: "https://www.youtube.com/embed/QOVaHwm-Q6U",
+    videoUrl: "https://www.youtube.com/embed/D7Ka_QXh_OE",
     imageUrl: "https://picsum.photos/seed/lunges/600/400",
     dataAiHint: "lunge exercise"
   },
@@ -93,7 +93,7 @@ export const exercises = [
     muscleGroup: "Arms",
     equipment: "Dumbbells",
     instructions: "Stand or sit holding a dumbbell in each hand with an underhand grip. Curl the weights up towards your shoulders, keeping your elbows stationary. Squeeze your biceps at the top, then lower the weights back down slowly.",
-    videoUrl: "https://www.youtube.com/embed/in7PaeYlhrM",
+    videoUrl: "https://www.youtube.com/embed/sBqyc2waGdo",
     imageUrl: "https://picsum.photos/seed/bicep-curl/600/400",
     dataAiHint: "bicep curl"
   }
