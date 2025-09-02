@@ -29,10 +29,13 @@ export async function getUserProfile(
   userId: string
 ): Promise<UserProfile | null> {
   try {
+    console.log("Trying to get profile!")
     const docRef = doc(db, "users", userId);
     const docSnap = await getDoc(docRef);
+    console.log("Document Snap Found")
 
     if (docSnap.exists()) {
+      console.log("Document Exists")
       const data = docSnap.data();
       // Validate data with Zod schema
       return userProfileSchema.parse({ ...data, id: userId });
