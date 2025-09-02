@@ -75,7 +75,7 @@ export const exercises = [
     muscleGroup: "Legs",
     equipment: "Dumbbells",
     instructions: "Stand with your feet together, holding a dumbbell in each hand. Step forward with one leg and lower your hips until both knees are bent at a 90-degree angle. Push back to the starting position and repeat with the other leg.",
-    videoUrl: "https://www.youtube.com/embed/D7Ka_v7h_h8",
+    videoUrl: "https://www.youtube.com/embed/Z2n58m2i4jg",
     imageUrl: "https://picsum.photos/seed/lunges/600/400",
     dataAiHint: "lunge exercise"
   },
