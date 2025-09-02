@@ -21,13 +21,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { progressData, recentWorkouts as staticRecentWorkouts } from "@/lib/data";
+import { progressData } from "@/lib/data";
 import { ProgressChart } from "@/components/dashboard/progress-chart";
 import { predictFutureProgress } from "@/ai/flows/predict-future-progress";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AiDailyGoals } from "@/components/dashboard/ai-daily-goals";
 import { generateRecentWorkouts, type RecentWorkout } from "@/ai/flows/generate-recent-workouts";
+import { recentWorkouts as staticRecentWorkouts } from "@/lib/data";
 
 function AiForecast() {
   const [prediction, setPrediction] = useState<string | null>(null);
