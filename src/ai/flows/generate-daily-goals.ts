@@ -51,6 +51,7 @@ const generateDailyGoalsFlow = ai.defineFlow(
   },
   async () => {
     const { output } = await prompt();
+    console.log("Output", output)
     return output!;
   }
 );
