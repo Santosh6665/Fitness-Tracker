@@ -76,7 +76,7 @@ const processVoiceJournalFlow = ai.defineFlow(
   },
   async (input) => {
     const { text: transcription } = await ai.generate({
-      model: 'googleai/gemini-1.5-flash-latest',
+      model: 'googleai/gemini-2.5-flash-lite',
       prompt: [
         { text: 'Transcribe the following audio.'},
         {
