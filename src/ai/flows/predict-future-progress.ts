@@ -59,9 +59,11 @@ const predictFutureProgressFlow = ai.defineFlow(
     name: 'predictFutureProgressFlow',
     inputSchema: PredictFutureProgressInputSchema,
     outputSchema: PredictFutureProgressOutputSchema,
+    model: 'gemini-1.5-pro-latest',
   },
   async (input) => {
     const { output } = await prompt(input);
     return output!;
   }
 );
+
