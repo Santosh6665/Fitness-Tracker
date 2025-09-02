@@ -70,6 +70,7 @@ const generatePersonalizedWorkoutPlanFlow = ai.defineFlow(
     name: 'generatePersonalizedWorkoutPlanFlow',
     inputSchema: PersonalizedWorkoutPlanInputSchema,
     outputSchema: PersonalizedWorkoutPlanOutputSchema,
+    model: 'gemini-1.5-pro-latest',
   },
   async input => {
     const {output} = await prompt(input);
