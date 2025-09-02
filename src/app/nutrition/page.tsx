@@ -38,14 +38,14 @@ const initialNutritionData = {
   calories: {
     label: "Calories",
     current: 1850,
-    target: 2500,
+    target: 2400,
     unit: "kcal",
     icon: Flame,
   },
   protein: {
     label: "Protein",
     current: 120,
-    target: 150,
+    target: 140,
     unit: "g",
     icon: Beef,
   },
@@ -66,7 +66,7 @@ const initialNutritionData = {
   water: {
     label: "Water",
     current: 1.5,
-    target: 2.5,
+    target: 3.0,
     unit: "L",
     icon: GlassWater,
   },
