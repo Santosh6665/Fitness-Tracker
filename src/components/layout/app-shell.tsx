@@ -8,12 +8,9 @@ import {
   Dumbbell,
   Flame,
   LayoutDashboard,
-  NotebookPen,
   Video,
-  Mic,
   BarChart,
   Bot,
-  Star,
   User,
   Activity,
 } from "lucide-react";
@@ -29,13 +26,11 @@ import {
   SidebarInset,
   SidebarTrigger,
   useSidebar,
-  SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Logo } from "@/components/icons/logo";
 import { cn } from "@/lib/utils";
 import { UserNav } from "@/components/layout/user-nav";
 import { useAuth } from "@/components/auth/auth-provider";
-import { Button } from "../ui/button";
 
 const navItems = [
   { href: "/", icon: LayoutDashboard, label: "Dashboard" },
@@ -43,7 +38,6 @@ const navItems = [
   { href: "/exercises", icon: Dumbbell, label: "Exercises" },
   { href: "/form-check", icon: Video, label: "Form Check" },
   { href: "/nutrition", icon: Flame, label: "Nutrition" },
-  { href: "/journal", icon: Mic, label: "Voice Journal" },
   { href: "/reports", icon: BarChart, label: "Reports" },
   { href: "/ai-coach", icon: Bot, label: "AI Coach" },
 ];
@@ -51,13 +45,13 @@ const navItems = [
 function PageHeader() {
   const { isMobile } = useSidebar();
   const pathname = usePathname();
-  const currentNav = navItems.find((item) => item.href === pathname);
   const { user } = useAuth();
 
   const getPageTitle = () => {
     if (pathname === '/onboarding') return 'Welcome';
     if (pathname === '/nutrition-tools') return 'Advanced Nutrition Tools';
     if (pathname === '/profile') return 'Your Profile';
+    const currentNav = navItems.find((item) => item.href === pathname);
     if (!currentNav) return '';
     return currentNav.label;
   }
