@@ -112,7 +112,7 @@ function DailyReport() {
             <Activity /> Workout Summary
           </CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <CardContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Workouts</CardTitle>
@@ -162,7 +162,7 @@ function DailyReport() {
             <Salad /> Nutrition Summary
           </CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <CardContent className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {Object.entries(nutritionMeta).map(([key, meta]) => {
                 const data = nutritionLog?.[key as keyof typeof nutritionMeta];
                 return (
@@ -410,7 +410,7 @@ function WeeklyReport() {
 export default function ReportsPage() {
   return (
     <Tabs defaultValue="weekly" className="space-y-4">
-      <TabsList>
+      <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="daily">Daily</TabsTrigger>
         <TabsTrigger value="weekly">Weekly</TabsTrigger>
       </TabsList>

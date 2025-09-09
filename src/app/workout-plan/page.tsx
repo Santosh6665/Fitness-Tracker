@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Bot } from "lucide-react";
+import { Sparkles, Bot, Loader2 } from "lucide-react";
 import { Markdown } from "@/components/markdown";
 
 const formSchema = z.object({
@@ -81,8 +81,8 @@ export default function WorkoutPlanPage() {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-3">
-      <Card className="md:col-span-1">
+    <div className="grid gap-6 lg:grid-cols-3">
+      <Card className="lg:col-span-1">
         <CardHeader>
           <CardTitle className="font-headline">Create Your Plan</CardTitle>
           <CardDescription>
@@ -153,14 +153,13 @@ export default function WorkoutPlanPage() {
                 )}
               />
               <Button type="submit" disabled={isLoading} className="w-full">
-                {isLoading ? "Generating..." : "Generate Plan"}
-                <Sparkles className="ml-2 h-4 w-4" />
+                {isLoading ? <><Loader2 className="animate-spin mr-2"/> Generating...</> : <>Generate Plan<Sparkles className="ml-2 h-4 w-4" /></>}
               </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
-      <div className="md:col-span-2">
+      <div className="lg:col-span-2">
         <Card className="h-full">
           <CardHeader>
             <CardTitle className="font-headline">Your Personalized Plan</CardTitle>
@@ -170,14 +169,14 @@ export default function WorkoutPlanPage() {
           </CardHeader>
           <CardContent>
             {isLoading && (
-              <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-8">
-                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+              <div className="flex flex-col h-full items-center justify-center text-center text-muted-foreground p-8 min-h-[300px]">
+                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
                  <p className="mt-4">Our AI is crafting your perfect plan...</p>
               </div>
             )}
             {workoutPlan && <Markdown content={workoutPlan} />}
             {!isLoading && !workoutPlan && (
-               <div className="flex flex-col items-center justify-center text-center text-muted-foreground p-8">
+               <div className="flex flex-col h-full items-center justify-center text-center text-muted-foreground p-8 min-h-[300px]">
                  <Bot className="h-12 w-12" />
                  <p className="mt-4">Fill out the form to get started!</p>
                </div>

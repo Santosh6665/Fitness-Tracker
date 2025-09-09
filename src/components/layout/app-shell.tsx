@@ -64,10 +64,11 @@ function PageHeader() {
   }
 
   return (
-    <header className={cn("sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 sm:pt-4 sm:pb-2", {
+    <header className={cn("sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 sm:pt-4 sm:pb-2", {
       "pl-14": !isMobile
     })}>
        <SidebarTrigger className={cn("sm:hidden", {
+        "fixed left-2 top-2 z-50": isMobile,
         "-ml-14": !isMobile
       })} />
       <h1 className="text-xl font-semibold font-headline">{getPageTitle()}</h1>

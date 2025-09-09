@@ -190,7 +190,7 @@ function RecentActivity() {
                 <TableRow>
                   <TableHead>Date</TableHead>
                   <TableHead>Activity</TableHead>
-                  <TableHead>Details</TableHead>
+                  <TableHead className="hidden md:table-cell">Details</TableHead>
                   <TableHead className="text-right">Value</TableHead>
                 </TableRow>
               </TableHeader>
@@ -200,7 +200,7 @@ function RecentActivity() {
                         <TableRow key={i}>
                             <TableCell><Skeleton className="h-5 w-24" /></TableCell>
                             <TableCell><Skeleton className="h-5 w-28" /></TableCell>
-                            <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                            <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-32" /></TableCell>
                             <TableCell className="text-right"><Skeleton className="h-5 w-16 ml-auto" /></TableCell>
                         </TableRow>
                     ))
@@ -214,7 +214,7 @@ function RecentActivity() {
                           {iconMap[item.type]}
                           <span className="capitalize">{item.type}</span>
                         </TableCell>
-                        <TableCell className="text-xs sm:text-sm">
+                        <TableCell className="text-xs sm:text-sm hidden md:table-cell">
                             {item.description}
                         </TableCell>
                         <TableCell className="text-right text-xs sm:text-sm">
