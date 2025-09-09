@@ -12,8 +12,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Activity,
-  Calendar,
-  CalendarDays,
   Flame,
   Loader2,
   Sparkles,
@@ -23,7 +21,6 @@ import {
   Beef,
   Wheat,
   Fish,
-  BarChart,
 } from "lucide-react";
 import { WeeklyActivityChart } from "@/components/reports/weekly-activity-chart";
 import {
@@ -36,15 +33,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/components/auth/auth-provider";
 import { DailyWorkoutLog, DailyNutritionLog, DailyGoal } from "@/lib/types";
 import { getTodaysWorkoutLog, getWorkoutHistory } from "@/services/workoutService";
-import { getTodaysNutrition, getNutritionHistory } from "@/services/nutritionService";
+import { getTodaysNutrition } from "@/services/nutritionService";
 import { getTodaysGoals } from "@/services/goalService";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
-import { Bar, ResponsiveContainer } from "recharts";
-import { ChartContainer } from "@/components/ui/chart";
-import { BarChart as BarChartRecharts } from "recharts";
-import { format, startOfMonth, endOfMonth, eachWeekOf, getWeek, isWithinInterval } from 'date-fns';
-
 
 function DailyReport() {
   const { user } = useAuth();
@@ -100,6 +92,10 @@ function DailyReport() {
                 <Skeleton className="h-28" />
                 <Skeleton className="h-28" />
             </div>
+             <Card>
+                <CardHeader><Skeleton className="h-6 w-1/4" /></CardHeader>
+                <CardContent><Skeleton className="h-32 w-full" /></CardContent>
+            </Card>
              <Card>
                 <CardHeader><Skeleton className="h-6 w-1/4" /></CardHeader>
                 <CardContent><Skeleton className="h-32 w-full" /></CardContent>
@@ -219,129 +215,6 @@ function DailyReport() {
     </div>
   );
 }
-
-function MonthlyReport() {
-    const { user } = useAuth();
-    const { toast } = useToast();
-    const [isLoading, setIsLoading] = useState(true);
-    const [monthlyData, setMonthlyData] = useState<any[]>([]);
-    const [stats, setStats] = useState({
-      totalWorkouts: 0,
-      totalDuration: 0,
-      totalCalories: 0,
-      avgDailyCalories: 0,
-    });
-  
-    useEffect(() => {
-      async function fetchMonthlyData() {
-        if (!user) {
-          setIsLoading(false);
-          return;
-        }
-        setIsLoading(true);
-        try {
-          const [workoutHistory, nutritionHistory] = await Promise.all([
-            getWorkoutHistory(user.uid),
-            getNutritionHistory(user.uid),
-          ]);
-          
-          const today = new Date();
-          const monthStart = startOfMonth(today);
-          const monthEnd = endOfMonth(today);
-  
-          const workoutsThisMonth = workoutHistory.filter(w => isWithinInterval(new Date(w.date), { start: monthStart, end: monthEnd }));
-          const nutritionThisMonth = nutritionHistory.filter(n => isWithinInterval(new Date((n as any).date), { start: monthStart, end: monthEnd }));
-          
-          const totalWorkouts = workoutsThisMonth.reduce((sum, day) => sum + day.sessions, 0);
-          const totalDuration = workoutsThisMonth.reduce((sum, day) => sum + day.duration, 0);
-          const totalWorkoutCalories = workoutsThisMonth.reduce((sum, day) => sum + day.calories, 0);
-  
-          const totalNutritionDays = nutritionThisMonth.length;
-          const totalIngestedCalories = nutritionThisMonth.reduce((sum, day) => sum + day.calories.current, 0);
-          const avgDailyCalories = totalNutritionDays > 0 ? Math.round(totalIngestedCalories / totalNutritionDays) : 0;
-          
-          setStats({ totalWorkouts, totalDuration, totalCalories: totalWorkoutCalories, avgDailyCalories });
-
-          const weeks = eachWeekOf(monthEnd, { weekStartsOn: 1 });
-          const weeklyChartData = weeks.map(weekStart => {
-            const weekEnd = new Date(weekStart);
-            weekEnd.setDate(weekEnd.getDate() + 6);
-            const workoutsInWeek = workoutsThisMonth.filter(w => isWithinInterval(new Date(w.date), { start: weekStart, end: weekEnd }));
-            const durationInWeek = workoutsInWeek.reduce((sum, w) => sum + w.duration, 0);
-            return {
-                name: `Week ${getWeek(weekStart)}`,
-                workouts: workoutsInWeek.length,
-                duration: durationInWeek
-            }
-          });
-
-          setMonthlyData(weeklyChartData);
-  
-        } catch (error) {
-          toast({ variant: 'destructive', title: 'Failed to load monthly data' });
-        } finally {
-          setIsLoading(false);
-        }
-      }
-      fetchMonthlyData();
-    }, [user, toast]);
-
-    const statCards = [
-        { title: 'Total Workouts', value: stats.totalWorkouts, unit: 'sessions', icon: Activity },
-        { title: 'Total Active Time', value: stats.totalDuration, unit: 'min', icon: Timer },
-        { title: 'Calories Burned', value: `~${stats.totalCalories}`, unit: 'kcal', icon: Flame },
-        { title: 'Avg. Daily Intake', value: `~${stats.avgDailyCalories}`, unit: 'kcal', icon: Salad },
-    ]
-  
-    if (isLoading) {
-      return <div className="flex items-center justify-center p-16"><Loader2 className="h-8 w-8 animate-spin" /></div>
-    }
-  
-    return (
-      <div className="space-y-6">
-        <Card>
-            <CardHeader>
-                <CardTitle className="font-headline">This Month's Highlights</CardTitle>
-                <CardDescription>{format(new Date(), 'MMMM yyyy')}</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                {statCards.map(stat => (
-                     <Card key={stat.title}>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                            <stat.icon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold font-headline">
-                            {stat.value}
-                            <span className="text-sm font-normal text-muted-foreground">
-                                {" "}{stat.unit}
-                            </span>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-            </CardContent>
-        </Card>
-        <Card>
-            <CardHeader>
-                <CardTitle className="font-headline">Weekly Breakdown</CardTitle>
-                <CardDescription>Your workout sessions and duration by week for this month.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                 <ChartContainer config={{}} className="h-72 w-full">
-                    <ResponsiveContainer>
-                        <BarChartRecharts data={monthlyData}>
-                            <Bar dataKey="workouts" fill="hsl(var(--primary))" radius={4} />
-                            <Bar dataKey="duration" fill="hsl(var(--secondary))" radius={4} />
-                        </BarChartRecharts>
-                    </ResponsiveContainer>
-                 </ChartContainer>
-            </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
 function WeeklyReport() {
   const [report, setReport] = useState<GenerateWeeklyReportOutput | null>(null);
@@ -540,16 +413,12 @@ export default function ReportsPage() {
       <TabsList>
         <TabsTrigger value="daily">Daily</TabsTrigger>
         <TabsTrigger value="weekly">Weekly</TabsTrigger>
-        <TabsTrigger value="monthly">Monthly</TabsTrigger>
       </TabsList>
       <TabsContent value="daily">
         <DailyReport />
       </TabsContent>
       <TabsContent value="weekly">
         <WeeklyReport />
-      </TabsContent>
-      <TabsContent value="monthly">
-        <MonthlyReport />
       </TabsContent>
     </Tabs>
   );
