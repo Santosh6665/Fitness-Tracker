@@ -39,6 +39,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { exercises } from "@/lib/data";
 
 
 const initialWorkoutData: DailyWorkoutLog = {
@@ -153,26 +155,50 @@ export default function WorkoutsPage() {
 }
 
 const manualLogSchema = z.object({
-  type: z.string().min(3, "Please enter a valid workout type."),
+  type: z.string().min(1, "Please select a workout type."),
+  otherType: z.string().optional(),
   duration: z.coerce.number().min(1, "Duration must be at least 1 minute."),
   calories: z.coerce.number().min(0, "Cannot be negative."),
+}).refine(data => {
+    if (data.type === 'Other' && (!data.otherType || data.otherType.length < 3)) {
+        return false;
+    }
+    return true;
+}, {
+    message: "Please enter a valid custom workout type (min. 3 characters).",
+    path: ["otherType"],
 });
+
 
 type ManualLogValues = z.infer<typeof manualLogSchema>;
 
-function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: ManualLogValues) => void }) {
+const workoutTypes = [
+    ...new Set(exercises.map(e => e.muscleGroup).concat(["Cardio", "HIIT", "Yoga", "Pilates", "Stretching"])),
+    "Other"
+];
+
+
+function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: string; duration: number; calories: number; }) => void }) {
   const [open, setOpen] = useState(false);
   const form = useForm<ManualLogValues>({
     resolver: zodResolver(manualLogSchema),
     defaultValues: {
       type: "",
+      otherType: "",
       duration: 0,
       calories: 0,
     },
   });
 
+  const selectedType = form.watch("type");
+
   const onSubmit = (values: ManualLogValues) => {
-    onLogWorkout(values);
+    const workoutData = {
+        type: values.type === 'Other' ? values.otherType! : values.type,
+        duration: values.duration,
+        calories: values.calories,
+    };
+    onLogWorkout(workoutData);
     form.reset();
     setOpen(false);
   };
@@ -193,19 +219,45 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: ManualLogValu
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Workout Type</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Full Body Strength" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+             <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Workout Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a workout type" />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            {workoutTypes.map(type => (
+                                <SelectItem key={type} value={type}>{type}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {selectedType === "Other" && (
+                <FormField
+                  control={form.control}
+                  name="otherType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Custom Workout Type</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Rock Climbing" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
-            />
+
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
