@@ -28,7 +28,7 @@ import { useAuth } from "@/components/auth/auth-provider";
 import { getTodaysWorkoutLog, updateTodaysWorkoutLog } from "@/services/workoutService";
 import { DailyWorkoutLog } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -177,6 +177,21 @@ const workoutTypes = [
     "Other"
 ];
 
+const caloriesPerMinuteMap: Record<string, number> = {
+    "Chest": 6,
+    "Legs": 7,
+    "Back": 6,
+    "Shoulders": 5,
+    "Arms": 4,
+    "Core": 4,
+    "Cardio": 10,
+    "HIIT": 14,
+    "Yoga": 3,
+    "Pilates": 3,
+    "Stretching": 2,
+    "Other": 7
+};
+
 
 function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: string; duration: number; calories: number; }) => void }) {
   const [open, setOpen] = useState(false);
@@ -190,7 +205,17 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
     },
   });
 
-  const selectedType = form.watch("type");
+  const { control, setValue, watch } = form;
+  const watchedType = watch("type");
+  const watchedDuration = watch("duration");
+
+  useEffect(() => {
+    if (watchedType && watchedDuration > 0) {
+      const calories = Math.round((caloriesPerMinuteMap[watchedType] || 7) * watchedDuration);
+      setValue("calories", calories);
+    }
+  }, [watchedType, watchedDuration, setValue]);
+
 
   const onSubmit = (values: ManualLogValues) => {
     const workoutData = {
@@ -204,7 +229,10 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      setOpen(isOpen);
+      if (!isOpen) form.reset();
+    }}>
       <DialogTrigger asChild>
         <Button>
           <Edit className="mr-2" /> Log a Workout
@@ -220,7 +248,7 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
              <FormField
-                control={form.control}
+                control={control}
                 name="type"
                 render={({ field }) => (
                   <FormItem>
@@ -242,9 +270,9 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
                 )}
               />
 
-              {selectedType === "Other" && (
+              {watchedType === "Other" && (
                 <FormField
-                  control={form.control}
+                  control={control}
                   name="otherType"
                   render={({ field }) => (
                     <FormItem>
@@ -260,7 +288,7 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
 
             <div className="grid grid-cols-2 gap-4">
               <FormField
-                control={form.control}
+                control={control}
                 name="duration"
                 render={({ field }) => (
                   <FormItem>
@@ -273,7 +301,7 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
                 )}
               />
               <FormField
-                control={form.control}
+                control={control}
                 name="calories"
                 render={({ field }) => (
                   <FormItem>
