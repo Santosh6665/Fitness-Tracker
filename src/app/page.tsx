@@ -129,14 +129,18 @@ function RecentActivity() {
                 value: `${n.calories.current} kcal`,
             }));
 
-            const goalActivities: ActivityEntry[] = goalsHistory
-              .filter(g => g.goals.every(goal => goal.current >= goal.target))
-              .map(g => ({
-                date: g.date,
-                type: 'goals',
-                description: 'All Daily Goals Achieved',
-                value: `+${g.goals.length} Goals`,
-              }));
+            const goalActivities: ActivityEntry[] = goalsHistory.map(g => {
+                const completedGoals = g.goals.filter(goal => goal.current >= goal.target).length;
+                const totalGoals = g.goals.length;
+                const allCompleted = completedGoals === totalGoals;
+
+                return {
+                    date: g.date,
+                    type: 'goals',
+                    description: allCompleted ? 'All Daily Goals Achieved' : `${completedGoals} / ${totalGoals} Goals Achieved`,
+                    value: `+${completedGoals} Goals`,
+                }
+            });
 
 
             const combined = [...workoutActivities, ...mealActivities, ...goalActivities];
