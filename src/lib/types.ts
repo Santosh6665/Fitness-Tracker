@@ -48,4 +48,12 @@ export const workoutEntrySchema = z.object({
 
 export type WorkoutEntry = z.infer<typeof workoutEntrySchema>;
 
+
+export type ActivityEntry = {
+    date: string;
+    type: 'workout' | 'meal';
+    description: string;
+    value: string;
+};
+
     

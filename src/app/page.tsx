@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bot, Loader2, Sparkles, RefreshCw, LineChart, Activity, Timer, Flame } from "lucide-react";
+import { Bot, Loader2, Sparkles, RefreshCw, LineChart, Activity, Timer, Flame, Salad } from "lucide-react";
 import Link from "next/link";
 import {
   Card,
@@ -30,9 +30,10 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AiDailyGoals } from "@/components/dashboard/ai-daily-goals";
 import { useAuth } from "@/components/auth/auth-provider";
 import { getUserProfile } from "@/services/userService";
-import { UserProfile, DailyWorkoutLog, WorkoutEntry } from "@/lib/types";
+import { UserProfile, DailyWorkoutLog, WorkoutEntry, ActivityEntry, DailyNutritionLog } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTodaysWorkoutLog, getWorkoutHistory } from "@/services/workoutService";
+import { getNutritionHistory } from "@/services/nutritionService";
 
 
 function AiForecast() {
@@ -100,23 +101,43 @@ function AiForecast() {
 }
 
 function RecentActivity() {
-    const [workouts, setWorkouts] = useState<WorkoutEntry[]>([]);
+    const [activity, setActivity] = useState<ActivityEntry[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
     const { user } = useAuth();
 
-    const fetchWorkouts = async () => {
+    const fetchActivity = async () => {
         if (!user) return;
         setIsLoading(true);
         try {
-            const result = await getWorkoutHistory(user.uid);
-            setWorkouts(result);
+            const workoutHistory = await getWorkoutHistory(user.uid);
+            const nutritionHistory = await getNutritionHistory(user.uid);
+
+            const workoutActivities: ActivityEntry[] = workoutHistory.map(w => ({
+                date: w.date,
+                type: 'workout',
+                description: `${w.sessions} session${w.sessions > 1 ? 's' : ''}`,
+                value: `${w.duration} min`,
+            }));
+            
+            const mealActivities: ActivityEntry[] = nutritionHistory.map(n => ({
+                date: (n as any).date,
+                type: 'meal',
+                description: `Logged meals`,
+                value: `${n.calories.current} kcal`,
+            }));
+
+            const combined = [...workoutActivities, ...mealActivities];
+            combined.sort((a, b) => b.date.localeCompare(a.date));
+
+            setActivity(combined.slice(0, 10));
+
         } catch (error) {
-            console.error("Failed to fetch recent workouts:", error);
+            console.error("Failed to fetch recent activity:", error);
             toast({
                 variant: "destructive",
                 title: "Failed to load activity",
-                description: "Could not fetch your recent workouts. Please try again later.",
+                description: "Could not fetch your recent activity. Please try again later.",
             });
         } finally {
             setIsLoading(false);
@@ -124,7 +145,7 @@ function RecentActivity() {
     };
     
     useEffect(() => {
-      fetchWorkouts();
+      fetchActivity();
     }, [user])
 
     return (
@@ -132,9 +153,9 @@ function RecentActivity() {
           <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <CardTitle className="font-headline">Recent Activity</CardTitle>
-                <CardDescription>Your latest workout log from the database.</CardDescription>
+                <CardDescription>Your latest workout and nutrition logs.</CardDescription>
             </div>
-             <Button variant="outline" size="sm" onClick={fetchWorkouts} disabled={isLoading}>
+             <Button variant="outline" size="sm" onClick={fetchActivity} disabled={isLoading}>
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
                 Refresh
             </Button>
@@ -144,37 +165,43 @@ function RecentActivity() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Date</TableHead>
-                  <TableHead>Workouts</TableHead>
-                  <TableHead className="text-right">Duration</TableHead>
+                  <TableHead>Activity</TableHead>
+                  <TableHead>Details</TableHead>
+                  <TableHead className="text-right">Value</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
-                    Array.from({length: 3}).map((_, i) => (
+                    Array.from({length: 5}).map((_, i) => (
                         <TableRow key={i}>
                             <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                            <TableCell><Skeleton className="h-5 w-12" /></TableCell>
+                            <TableCell><Skeleton className="h-5 w-28" /></TableCell>
+                            <TableCell><Skeleton className="h-5 w-32" /></TableCell>
                             <TableCell className="text-right"><Skeleton className="h-5 w-16 ml-auto" /></TableCell>
                         </TableRow>
                     ))
-                ) : workouts.length > 0 ? (
-                    workouts.map((workout, index) => (
+                ) : activity.length > 0 ? (
+                    activity.map((item, index) => (
                     <TableRow key={index}>
                         <TableCell className="text-xs sm:text-sm">
-                        {workout.date}
+                            {item.date}
                         </TableCell>
-                        <TableCell className="font-medium text-xs sm:text-sm">
-                        {workout.sessions} {workout.sessions > 1 ? 'sessions' : 'session'}
+                        <TableCell className="font-medium text-xs sm:text-sm flex items-center gap-2">
+                          {item.type === 'workout' ? <Activity className="h-4 w-4 text-primary" /> : <Salad className="h-4 w-4 text-green-500" />}
+                          <span className="capitalize">{item.type}</span>
+                        </TableCell>
+                        <TableCell className="text-xs sm:text-sm">
+                            {item.description}
                         </TableCell>
                         <TableCell className="text-right text-xs sm:text-sm">
-                        {workout.duration} min
+                            {item.value}
                         </TableCell>
                     </TableRow>
                     ))
                 ) : (
                     <TableRow>
-                        <TableCell colSpan={3} className="text-center text-muted-foreground">
-                            No workout history found.
+                        <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
+                            No activity found.
                         </TableCell>
                     </TableRow>
                 )}

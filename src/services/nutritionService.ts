@@ -1,7 +1,7 @@
 
 import { db } from "@/firebase/client";
 import { DailyNutritionLog, dailyNutritionLogSchema } from "@/lib/types";
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, collection, getDocs, query } from "firebase/firestore";
 import { format } from "date-fns";
 
 function getTodaysDate() {
@@ -35,7 +35,6 @@ export async function updateTodaysNutrition(
   const dateId = getTodaysDate();
   try {
     const docRef = doc(db, "users", userId, "nutrition", dateId);
-    // Use set with merge: true to create or update the document
     await setDoc(docRef, data, { merge: true });
   } catch (error) {
     console.error("Error updating nutrition log: ", error);
@@ -43,4 +42,27 @@ export async function updateTodaysNutrition(
   }
 }
 
+
+export async function getNutritionHistory(userId: string): Promise<DailyNutritionLog[]> {
+    try {
+        const historyCollection = collection(db, "users", userId, "nutrition");
+        const q = query(historyCollection);
+        const querySnapshot = await getDocs(q);
+        
+        const history: any[] = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            history.push({
+                date: doc.id,
+                ...data,
+            });
+        });
+
+        return history;
+
+    } catch (error) {
+        console.error("Error getting nutrition history: ", error);
+        throw new Error("Unable to retrieve nutrition history.");
+    }
+}
     
