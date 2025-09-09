@@ -250,7 +250,7 @@ function MonthlyReport() {
           const monthEnd = endOfMonth(today);
   
           const workoutsThisMonth = workoutHistory.filter(w => isWithinInterval(new Date(w.date), { start: monthStart, end: monthEnd }));
-          const nutritionThisMonth = nutritionHistory.filter(n => isWithinInterval(new Date(n.date), { start: monthStart, end: monthEnd }));
+          const nutritionThisMonth = nutritionHistory.filter(n => isWithinInterval(new Date((n as any).date), { start: monthStart, end: monthEnd }));
           
           const totalWorkouts = workoutsThisMonth.reduce((sum, day) => sum + day.sessions, 0);
           const totalDuration = workoutsThisMonth.reduce((sum, day) => sum + day.duration, 0);
