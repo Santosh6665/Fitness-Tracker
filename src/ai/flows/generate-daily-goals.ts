@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 const DailyGoalSchema = z.object({
     name: z.string().describe("The name of the goal (e.g., 'Walk 10,000 steps')."),
-    current: z.number().describe("The user's current progress towards the goal."),
+    current: z.number().describe("The user's current progress towards the goal, which should be initialized to 0."),
     target: z.number().describe('The target value for the goal.'),
     unit: z.string().describe("The unit for the goal (e.g., 'steps', 'minutes', 'meters')."),
 });
@@ -31,8 +31,7 @@ const prompt = ai.definePrompt({
 Generate a set of 2 to 4 varied and engaging daily fitness goals for a user.
 The goals should be a mix of activity, mindfulness, and nutrition.
 For each goal, provide a name, a target, and a unit.
-The 'current' progress for all generated goals should be a random number between 0 and the target, to simulate a user's progress through the day.
-Make the goals interesting and achievable.
+The 'current' progress for all generated goals must be initialized to 0.
 
 Example goals:
 - Walk 10,000 steps

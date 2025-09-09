@@ -56,4 +56,17 @@ export type ActivityEntry = {
     value: string;
 };
 
-    
+export const dailyGoalSchema = z.object({
+    name: z.string(),
+    current: z.number(),
+    target: z.number(),
+    unit: z.string(),
+});
+
+export type DailyGoal = z.infer<typeof dailyGoalSchema>;
+
+export const dailyGoalsLogSchema = z.object({
+    goals: z.array(dailyGoalSchema),
+});
+
+export type DailyGoalsLog = z.infer<typeof dailyGoalsLogSchema>;
