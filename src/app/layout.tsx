@@ -4,6 +4,7 @@ import './globals.css';
 import { AppShell } from '@/components/layout/app-shell';
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/components/auth/auth-provider';
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: 'AI Powered Fitness Tracker',
@@ -31,6 +32,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
+        <Analytics/>
         <AuthProvider>
           <AppShell>{children}</AppShell>
         </AuthProvider>
