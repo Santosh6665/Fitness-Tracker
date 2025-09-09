@@ -15,6 +15,7 @@ import {
   Bot,
   Star,
   User,
+  Activity,
 } from "lucide-react";
 
 import {
@@ -39,6 +40,7 @@ import { Button } from "../ui/button";
 const navItems = [
   { href: "/", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/workout-plan", icon: NotebookPen, label: "Workout Plan" },
+  { href: "/workouts", icon: Activity, label: "Workouts" },
   { href: "/exercises", icon: Dumbbell, label: "Exercises" },
   { href: "/form-check", icon: Video, label: "Form Check" },
   { href: "/nutrition", icon: Flame, label: "Nutrition" },
