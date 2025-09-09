@@ -32,62 +32,76 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { recentWorkouts } from "@/lib/data";
 import { getPostWorkoutNutritionAdvice } from "@/ai/flows/get-post-workout-nutrition-advice";
 import { getNutritionInsight } from "@/ai/flows/get-nutrition-insight";
+import { useAuth } from "@/components/auth/auth-provider";
+import { getTodaysNutrition, updateTodaysNutrition } from "@/services/nutritionService";
+import { DailyNutritionLog } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
-const initialNutritionData = {
-  calories: {
-    label: "Calories",
-    current: 1850,
-    target: 2500,
-    unit: "kcal",
-    icon: Flame,
-  },
-  protein: {
-    label: "Protein",
-    current: 120,
-    target: 150,
-    unit: "g",
-    icon: Beef,
-  },
-  carbs: {
-    label: "Carbohydrates",
-    current: 200,
-    target: 300,
-    unit: "g",
-    icon: Wheat,
-  },
-  fats: {
-    label: "Fats",
-    current: 60,
-    target: 70,
-    unit: "g",
-    icon: Fish,
-  },
-  water: {
-    label: "Water",
-    current: 1.5,
-    target: 2.5,
-    unit: "L",
-    icon: GlassWater,
-  },
+const initialNutritionData: DailyNutritionLog = {
+  calories: { current: 0, target: 2400 },
+  protein: { current: 0, target: 140 },
+  carbs: { current: 0, target: 300 },
+  fats: { current: 0, target: 70 },
+  water: { current: 0, target: 2.5 },
+};
+
+const nutritionMeta = {
+    calories: { label: "Calories", unit: "kcal", icon: Flame },
+    protein: { label: "Protein", unit: "g", icon: Beef },
+    carbs: { label: "Carbohydrates", unit: "g", icon: Wheat },
+    fats: { label: "Fats", unit: "g", icon: Fish },
+    water: { label: "Water", unit: "L", icon: GlassWater },
 };
 
 export default function NutritionPage() {
-  const [nutrition, setNutrition] = useState(initialNutritionData);
+  const [nutrition, setNutrition] = useState<DailyNutritionLog | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
   const { toast } = useToast();
 
-  const handleLogMeal = (mealData: AnalyzeMealOutput) => {
-    setNutrition(prev => ({
-        ...prev,
-        calories: { ...prev.calories, current: prev.calories.current + mealData.calories },
-        protein: { ...prev.protein, current: prev.protein.current + mealData.protein },
-        carbs: { ...prev.carbs, current: prev.carbs.current + mealData.carbs },
-        fats: { ...prev.fats, current: prev.fats.current + mealData.fats },
-    }));
-    toast({
+  useEffect(() => {
+    async function fetchNutritionData() {
+      if (user) {
+        setIsLoading(true);
+        try {
+          const data = await getTodaysNutrition(user.uid);
+          setNutrition(data || initialNutritionData);
+        } catch (error) {
+          toast({ variant: 'destructive', title: 'Failed to load nutrition data.' });
+          setNutrition(initialNutritionData);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }
+    fetchNutritionData();
+  }, [user, toast]);
+
+  const handleLogMeal = async (mealData: AnalyzeMealOutput) => {
+    if (!user || !nutrition) return;
+
+    const newNutrition: DailyNutritionLog = {
+      ...nutrition,
+      calories: { ...nutrition.calories, current: nutrition.calories.current + mealData.calories },
+      protein: { ...nutrition.protein, current: nutrition.protein.current + mealData.protein },
+      carbs: { ...nutrition.carbs, current: nutrition.carbs.current + mealData.carbs },
+      fats: { ...nutrition.fats, current: nutrition.fats.current + mealData.fats },
+    };
+
+    setNutrition(newNutrition);
+
+    try {
+      await updateTodaysNutrition(user.uid, newNutrition);
+      toast({
         title: "Meal Logged!",
         description: `${mealData.description} has been added to your daily log.`
-    })
+      });
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Failed to save meal.', description: 'Your meal was logged locally but could not be saved to the database.' });
+      // Optionally revert state on failure
+      setNutrition(nutrition);
+    }
   };
 
 
@@ -102,29 +116,37 @@ export default function NutritionPage() {
           <LogMealDialog onLogMeal={handleLogMeal} />
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Object.values(nutrition).map((item) => (
-            <Card key={item.label}>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {item.label}
-                </CardTitle>
-                <item.icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold font-headline">
-                  {item.current}
-                  <span className="text-sm font-normal text-muted-foreground">
-                    {" "}/ {item.target} {item.unit}
-                  </span>
-                </div>
-                <Progress
-                  value={(item.current / item.target) * 100}
-                  className="mt-2 h-2"
-                  aria-label={`${item.label} intake`}
-                />
-              </CardContent>
-            </Card>
-          ))}
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-28" />)
+          ) : (
+            Object.entries(nutrition || initialNutritionData).map(([key, item]) => {
+              const meta = nutritionMeta[key as keyof typeof nutritionMeta];
+              if (!meta) return null;
+              return (
+                <Card key={key}>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      {meta.label}
+                    </CardTitle>
+                    <meta.icon className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold font-headline">
+                      {item.current}
+                      <span className="text-sm font-normal text-muted-foreground">
+                        {" "}/ {item.target} {meta.unit}
+                      </span>
+                    </div>
+                    <Progress
+                      value={(item.current / item.target) * 100}
+                      className="mt-2 h-2"
+                      aria-label={`${meta.label} intake`}
+                    />
+                  </CardContent>
+                </Card>
+              );
+            })
+          )}
         </CardContent>
       </Card>
       
@@ -444,3 +466,5 @@ function AiInsights() {
         </Card>
     );
 }
+
+    
