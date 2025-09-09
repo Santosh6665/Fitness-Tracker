@@ -34,13 +34,13 @@ const chartConfig = {
 
 export function ProgressChart() {
   return (
-    <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+    <ChartContainer config={chartConfig} className="lg:min-h-[300h] w-full">
       <LineChart
         accessibilityLayer
         data={progressData}
         margin={{
-          left: 12,
-          right: 12,
+          left: -62,
+          right: -62,
           top: 5,
         }}
       >
