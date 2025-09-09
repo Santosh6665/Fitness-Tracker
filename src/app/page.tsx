@@ -21,10 +21,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { progressData } from "@/lib/data";
-import { WeightProgressChart } from "@/components/dashboard/weight-progress-chart";
-import { StrengthProgressChart } from "@/components/dashboard/strength-progress-chart";
-import { predictFutureProgress } from "@/ai/flows/predict-future-progress";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AiDailyGoals } from "@/components/dashboard/ai-daily-goals";
@@ -35,6 +31,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getTodaysWorkoutLog, getWorkoutHistory } from "@/services/workoutService";
 import { getNutritionHistory } from "@/services/nutritionService";
 import { getGoalsHistory } from "@/services/goalService";
+import { predictFutureProgress } from "@/ai/flows/predict-future-progress";
+import { progressData } from "@/lib/data";
+import { ProgressChart } from "@/components/dashboard/progress-chart";
 
 
 function AiForecast() {
@@ -239,15 +238,13 @@ function RecentActivity() {
 
 function ProgressOverview() {
     const { user } = useAuth();
-    const [profile, setProfile] = useState<UserProfile | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         async function fetchProfile() {
             if (user) {
                 try {
-                    const userProfile = await getUserProfile(user.uid);
-                    setProfile(userProfile);
+                    await getUserProfile(user.uid);
                 } catch (error) {
                     console.error("Failed to fetch user profile", error);
                 } finally {
@@ -260,51 +257,19 @@ function ProgressOverview() {
         fetchProfile();
     }, [user]);
 
-    const hasWeightLossGoal = profile?.goals?.includes('weight_loss');
-    const hasMuscleGainGoal = profile?.goals?.includes('muscle_gain');
-
     const renderChart = () => {
         if (isLoading) {
             return <Skeleton className="h-[300px]" />;
         }
-
-        if (!profile || !profile.goals || profile.goals.length === 0) {
-            return (
-                <div className="flex flex-col items-center justify-center h-[300px] text-center text-muted-foreground p-4">
-                    <LineChart className="h-12 w-12 mb-4" />
-                    <h3 className="font-semibold text-lg">Personalize Your Dashboard</h3>
-                    <p className="mb-4">Complete your profile to see a personalized progress chart based on your goals.</p>
-                    <Button asChild>
-                        <Link href="/onboarding">Personalize Your Plan</Link>
-                    </Button>
-                </div>
-            );
-        }
-
-        if (hasWeightLossGoal) {
-            return <WeightProgressChart userWeight={profile.weight} />;
-        }
-
-        if (hasMuscleGainGoal) {
-            return <StrengthProgressChart />;
-        }
-        
-        return <StrengthProgressChart />;
+        return <ProgressChart />;
     };
     
-    const getCardDescription = () => {
-        if (!profile || isLoading) return "Your progress based on your goals.";
-        if (hasWeightLossGoal) return "Your weight progression over the last 6 months.";
-        if (hasMuscleGainGoal) return "Your squat strength progression over the last 6 months.";
-        return "Your general progress over the last 6 months.";
-    }
-
     return (
          <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="font-headline">Progress Overview</CardTitle>
             <CardDescription>
-              {getCardDescription()}
+              Your progress across key metrics for the last 6 months.
             </CardDescription>
           </CardHeader>
           <CardContent>
