@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Flame, Beef, Wheat, Fish, GlassWater, Upload, Sparkles, Loader2, Salad, X, Star, Dumbbell, Lightbulb } from "lucide-react";
+import { Flame, Beef, Wheat, Fish, GlassWater, Upload, Sparkles, Loader2, Salad, X, Star, Dumbbell, Lightbulb, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { analyzeMeal, AnalyzeMealOutput } from "@/ai/flows/analyze-meal";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -36,6 +36,17 @@ import { useAuth } from "@/components/auth/auth-provider";
 import { getTodaysNutrition, updateTodaysNutrition } from "@/services/nutritionService";
 import { DailyNutritionLog } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 
 const initialNutritionData: DailyNutritionLog = {
@@ -78,7 +89,7 @@ export default function NutritionPage() {
     fetchNutritionData();
   }, [user, toast]);
 
-  const handleLogMeal = async (mealData: AnalyzeMealOutput) => {
+  const handleLogMeal = async (mealData: Omit<AnalyzeMealOutput, 'description'> & { description?: string }) => {
     if (!user || !nutrition) return;
 
     const newNutrition: DailyNutritionLog = {
@@ -95,11 +106,10 @@ export default function NutritionPage() {
       await updateTodaysNutrition(user.uid, newNutrition);
       toast({
         title: "Meal Logged!",
-        description: `${mealData.description} has been added to your daily log.`
+        description: `${mealData.description || 'Your meal'} has been added to your daily log.`
       });
     } catch (error) {
       toast({ variant: 'destructive', title: 'Failed to save meal.', description: 'Your meal was logged locally but could not be saved to the database.' });
-      // Optionally revert state on failure
       setNutrition(nutrition);
     }
   };
@@ -113,7 +123,10 @@ export default function NutritionPage() {
             <CardTitle className="font-headline">Daily Nutrition</CardTitle>
             <CardDescription>Your intake for today.</CardDescription>
           </div>
-          <LogMealDialog onLogMeal={handleLogMeal} />
+          <div className="flex flex-col sm:flex-row gap-2">
+            <LogMealDialog onLogMeal={handleLogMeal} />
+            <LogMealManuallyDialog onLogMeal={handleLogMeal} />
+          </div>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {isLoading ? (
@@ -346,6 +359,130 @@ function LogMealDialog({ onLogMeal }: { onLogMeal: (data: AnalyzeMealOutput) => 
   );
 }
 
+const manualLogSchema = z.object({
+  description: z.string().optional(),
+  calories: z.coerce.number().min(0, "Cannot be negative"),
+  protein: z.coerce.number().min(0, "Cannot be negative"),
+  carbs: z.coerce.number().min(0, "Cannot be negative"),
+  fats: z.coerce.number().min(0, "Cannot be negative"),
+});
+type ManualLogValues = z.infer<typeof manualLogSchema>;
+
+function LogMealManuallyDialog({ onLogMeal }: { onLogMeal: (data: ManualLogValues) => void }) {
+  const [open, setOpen] = useState(false);
+  const form = useForm<ManualLogValues>({
+    resolver: zodResolver(manualLogSchema),
+    defaultValues: {
+      description: "",
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fats: 0,
+    },
+  });
+
+  const onSubmit = (values: ManualLogValues) => {
+    onLogMeal(values);
+    form.reset();
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <Edit className="mr-2" /> Log Meal Manually
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="font-headline">Log Meal Manually</DialogTitle>
+          <DialogDescription>
+            Enter the nutritional information for your meal.
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Chicken salad" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="calories"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Calories (kcal)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="protein"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Protein (g)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="carbs"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Carbs (g)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="fats"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Fats (g)</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit" className="w-full">
+                Add to Daily Log
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function PostWorkoutAdvisor() {
     const [advice, setAdvice] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -466,5 +603,3 @@ function AiInsights() {
         </Card>
     );
 }
-
-    
