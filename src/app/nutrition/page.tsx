@@ -50,11 +50,11 @@ import {
 
 
 const initialNutritionData: DailyNutritionLog = {
-  calories: { current: 0, target: 2400 },
-  protein: { current: 0, target: 140 },
+  calories: { current: 0, target: 2500 },
+  protein: { current: 0, target: 150 },
   carbs: { current: 0, target: 300 },
   fats: { current: 0, target: 70 },
-  water: { current: 0, target: 2.5 },
+  water: { current: 0, target: 3 },
 };
 
 const nutritionMeta = {
@@ -64,6 +64,16 @@ const nutritionMeta = {
     fats: { label: "Fats", unit: "g", icon: Fish },
     water: { label: "Water", unit: "L", icon: GlassWater },
 };
+
+type ManualLogData = {
+    description?: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fats: number;
+    water: number;
+};
+
 
 export default function NutritionPage() {
   const [nutrition, setNutrition] = useState<DailyNutritionLog | null>(null);
@@ -89,7 +99,7 @@ export default function NutritionPage() {
     fetchNutritionData();
   }, [user, toast]);
 
-  const handleLogMeal = async (mealData: Omit<AnalyzeMealOutput, 'description'> & { description?: string }) => {
+  const handleLogMeal = async (mealData: ManualLogData) => {
     if (!user || !nutrition) return;
 
     const newNutrition: DailyNutritionLog = {
@@ -98,6 +108,7 @@ export default function NutritionPage() {
       protein: { ...nutrition.protein, current: nutrition.protein.current + mealData.protein },
       carbs: { ...nutrition.carbs, current: nutrition.carbs.current + mealData.carbs },
       fats: { ...nutrition.fats, current: nutrition.fats.current + mealData.fats },
+      water: { ...nutrition.water, current: nutrition.water.current + mealData.water },
     };
 
     setNutrition(newNutrition);
@@ -105,11 +116,11 @@ export default function NutritionPage() {
     try {
       await updateTodaysNutrition(user.uid, newNutrition);
       toast({
-        title: "Meal Logged!",
-        description: `${mealData.description || 'Your meal'} has been added to your daily log.`
+        title: "Log Updated!",
+        description: `${mealData.description || 'Your entry'} has been added to your daily log.`
       });
     } catch (error) {
-      toast({ variant: 'destructive', title: 'Failed to save meal.', description: 'Your meal was logged locally but could not be saved to the database.' });
+      toast({ variant: 'destructive', title: 'Failed to save log.', description: 'Your entry was logged locally but could not be saved to the database.' });
       setNutrition(nutrition);
     }
   };
@@ -190,7 +201,7 @@ export default function NutritionPage() {
   );
 }
 
-function LogMealDialog({ onLogMeal }: { onLogMeal: (data: AnalyzeMealOutput) => void }) {
+function LogMealDialog({ onLogMeal }: { onLogMeal: (data: ManualLogData) => void }) {
   const [open, setOpen] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -269,7 +280,7 @@ function LogMealDialog({ onLogMeal }: { onLogMeal: (data: AnalyzeMealOutput) => 
 
   const handleAddToLog = () => {
     if (analysisResult) {
-      onLogMeal(analysisResult);
+      onLogMeal({ ...analysisResult, water: 0});
       setOpen(false);
     }
   }
@@ -365,6 +376,7 @@ const manualLogSchema = z.object({
   protein: z.coerce.number().min(0, "Cannot be negative"),
   carbs: z.coerce.number().min(0, "Cannot be negative"),
   fats: z.coerce.number().min(0, "Cannot be negative"),
+  water: z.coerce.number().min(0, "Cannot be negative"),
 });
 type ManualLogValues = z.infer<typeof manualLogSchema>;
 
@@ -378,6 +390,7 @@ function LogMealManuallyDialog({ onLogMeal }: { onLogMeal: (data: ManualLogValue
       protein: 0,
       carbs: 0,
       fats: 0,
+      water: 0,
     },
   });
 
@@ -391,14 +404,14 @@ function LogMealManuallyDialog({ onLogMeal }: { onLogMeal: (data: ManualLogValue
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <Edit className="mr-2" /> Log Meal Manually
+          <Edit className="mr-2" /> Log Manually
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-headline">Log Meal Manually</DialogTitle>
+          <DialogTitle className="font-headline">Log Manually</DialogTitle>
           <DialogDescription>
-            Enter the nutritional information for your meal.
+            Enter the nutritional information for your meal or just log water.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -471,6 +484,19 @@ function LogMealManuallyDialog({ onLogMeal }: { onLogMeal: (data: ManualLogValue
                 )}
               />
             </div>
+             <FormField
+                control={form.control}
+                name="water"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Water (L)</FormLabel>
+                    <FormControl>
+                      <Input type="number" step="0.1" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             <DialogFooter>
               <Button type="submit" className="w-full">
                 Add to Daily Log
@@ -603,3 +629,5 @@ function AiInsights() {
         </Card>
     );
 }
+
+    
