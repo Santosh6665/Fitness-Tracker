@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Activity, Edit, Flame, Loader2, RefreshCw, Timer } from "lucide-react";
+import { Activity, Edit, Flame, Loader2, RefreshCw, Timer, Sparkles, Bot, NotebookPen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/components/auth/auth-provider";
 import { getTodaysWorkoutLog, updateTodaysWorkoutLog, getWorkoutHistory } from "@/services/workoutService";
@@ -49,6 +49,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import { generatePersonalizedWorkoutPlan } from "@/ai/flows/generate-personalized-workout-plan";
+import { Markdown } from "@/components/markdown";
 
 
 const initialWorkoutData: DailyWorkoutLog = {
@@ -159,7 +162,7 @@ function RecentActivity() {
     )
 }
 
-export default function WorkoutsPage() {
+function TodaysActivity({ onLogWorkout }: { onLogWorkout: (data: ManualLogData) => void }) {
   const [workoutLog, setWorkoutLog] = useState<DailyWorkoutLog | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
@@ -183,40 +186,20 @@ export default function WorkoutsPage() {
     fetchWorkoutData();
   }, [user, toast]);
 
-  const handleLogWorkout = async (workoutData: ManualLogData) => {
-    if (!user || !workoutLog) return;
-
-    const newWorkoutLog: DailyWorkoutLog = {
-      ...workoutLog,
-      sessions: workoutLog.sessions + 1,
-      duration: workoutLog.duration + workoutData.duration,
-      calories: workoutLog.calories + workoutData.calories,
-    };
-
-    setWorkoutLog(newWorkoutLog);
-
-    try {
-      await updateTodaysWorkoutLog(user.uid, newWorkoutLog);
-      toast({
-        title: "Workout Logged!",
-        description: `Your ${workoutData.type} workout has been added to your daily log.`
-      });
-    } catch (error) {
-      toast({ variant: 'destructive', title: 'Failed to save log.', description: 'Your entry was logged locally but could not be saved to the database.' });
-      setWorkoutLog(workoutLog); // Revert state on error
+  useEffect(() => {
+    if (workoutLog) {
+      // This effect can be used if we need to react to workoutLog changes from manual logging
     }
-  };
-
+  }, [workoutLog]);
 
   return (
-    <div className="space-y-6">
-      <Card>
+     <Card>
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <CardTitle className="font-headline">Today's Activity</CardTitle>
             <CardDescription>Your workout summary for today.</CardDescription>
           </div>
-          <LogWorkoutDialog onLogWorkout={handleLogWorkout} />
+          <LogWorkoutDialog onLogWorkout={onLogWorkout} />
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {isLoading ? (
@@ -247,7 +230,192 @@ export default function WorkoutsPage() {
           )}
         </CardContent>
       </Card>
-      <RecentActivity />
+  )
+}
+
+const workoutPlanFormSchema = z.object({
+  fitnessGoals: z.string().min(10, {
+    message: "Please describe your fitness goals in at least 10 characters.",
+  }),
+  experienceLevel: z.enum(["beginner", "intermediate", "advanced"], {
+    required_error: "Please select your experience level.",
+  }),
+  availableEquipment: z.string().min(2, {
+    message: "Please list your equipment, or type 'none'.",
+  }),
+});
+
+
+function WorkoutPlanGenerator() {
+  const [workoutPlan, setWorkoutPlan] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof workoutPlanFormSchema>>({
+    resolver: zodResolver(workoutPlanFormSchema),
+    defaultValues: {
+      fitnessGoals: "",
+      availableEquipment: "",
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof workoutPlanFormSchema>) {
+    setIsLoading(true);
+    setWorkoutPlan(null);
+    try {
+      const result = await generatePersonalizedWorkoutPlan(values);
+      setWorkoutPlan(result.workoutPlan);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Failed to generate plan",
+        description:
+          "There was an error generating your workout plan. Please try again.",
+      });
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle className="font-headline flex items-center gap-2">
+          <NotebookPen /> AI Workout Plan Generator
+        </CardTitle>
+        <CardDescription>
+          Tell us about yourself and we'll generate a personalized workout plan. Your generated plan will appear below.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="fitnessGoals"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fitness Goals</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="e.g., lose 10 pounds, build muscle, improve cardio"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="experienceLevel"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Experience Level</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your experience" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="beginner">Beginner</SelectItem>
+                      <SelectItem value="intermediate">Intermediate</SelectItem>
+                      <SelectItem value="advanced">Advanced</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="availableEquipment"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Available Equipment</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="e.g., Dumbbells, resistance bands, or 'none'"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={isLoading} className="w-full">
+              {isLoading ? <><Loader2 className="animate-spin mr-2"/> Generating...</> : <>Generate Plan<Sparkles className="ml-2 h-4 w-4" /></>}
+            </Button>
+          </form>
+        </Form>
+
+         <div className="mt-6">
+          {isLoading && (
+            <div className="flex flex-col h-full items-center justify-center text-center text-muted-foreground p-8 min-h-[200px]">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                <p className="mt-4">Our AI is crafting your perfect plan...</p>
+            </div>
+          )}
+          {workoutPlan && <Markdown content={workoutPlan} />}
+          {!isLoading && !workoutPlan && (
+              <div className="flex flex-col h-full items-center justify-center text-center text-muted-foreground p-8 min-h-[200px] border-2 border-dashed rounded-lg">
+                <Bot className="h-12 w-12" />
+                <p className="mt-4">Your AI-generated plan will appear here.</p>
+              </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+
+export default function WorkoutsPage() {
+  const [key, setKey] = useState(0); // Used to force re-render child components
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleLogWorkout = async (workoutData: ManualLogData) => {
+    if (!user) return;
+    
+    try {
+      const currentLog = await getTodaysWorkoutLog(user.uid) || initialWorkoutData;
+      
+      const newWorkoutLog: DailyWorkoutLog = {
+        ...currentLog,
+        sessions: currentLog.sessions + 1,
+        duration: currentLog.duration + workoutData.duration,
+        calories: currentLog.calories + workoutData.calories,
+      };
+      
+      await updateTodaysWorkoutLog(user.uid, newWorkoutLog);
+      toast({
+        title: "Workout Logged!",
+        description: `Your ${workoutData.type} workout has been added to your daily log.`
+      });
+      // Force re-render of children to show updated data
+      setKey(prevKey => prevKey + 1);
+
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Failed to save log.', description: 'Your entry was logged locally but could not be saved to the database.' });
+    }
+  };
+
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-2">
+      <div className="space-y-6">
+        <TodaysActivity key={`today-${key}`} onLogWorkout={handleLogWorkout} />
+        <RecentActivity key={`recent-${key}`} />
+      </div>
+      <div className="space-y-6">
+        <WorkoutPlanGenerator />
+      </div>
     </div>
   );
 }
