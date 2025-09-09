@@ -28,7 +28,6 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { AiDailyGoals } from "@/components/dashboard/ai-daily-goals";
 
 function DailyReport() {
   return (
@@ -71,8 +70,6 @@ function DailyReport() {
           </CardContent>
         </Card>
       </div>
-
-      <AiDailyGoals />
     </div>
   );
 }
