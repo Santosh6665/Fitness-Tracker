@@ -34,6 +34,7 @@ import { getGoalsHistory } from "@/services/goalService";
 import { predictFutureProgress } from "@/ai/flows/predict-future-progress";
 import { progressData } from "@/lib/data";
 import { ProgressChart } from "@/components/dashboard/progress-chart";
+import { Footer } from "@/components/layout/footer";
 
 
 function AiForecast() {
@@ -343,31 +344,34 @@ export default function DashboardPage() {
     const { user } = useAuth();
 
     return (
+      <>
         <div className="flex flex-col gap-6">
-        <Card>
-            <CardHeader>
-            <CardTitle className="font-headline text-2xl sm:text-3xl">
-                Welcome back, {user?.displayName || 'Fitness Warrior'}!
-            </CardTitle>
-            <CardDescription>
-                Here's a snapshot of your fitness journey. Keep up the great work!
-            </CardDescription>
-            </CardHeader>
-        </Card>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <ProgressOverview />
-            <div className="space-y-6">
-            <AiDailyGoals />
-            </div>
+          <Card>
+              <CardHeader>
+              <CardTitle className="font-headline text-2xl sm:text-3xl">
+                  Welcome back, {user?.displayName || 'Fitness Warrior'}!
+              </CardTitle>
+              <CardDescription>
+                  Here's a snapshot of your fitness journey. Keep up the great work!
+              </CardDescription>
+              </CardHeader>
+          </Card>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <ProgressOverview />
+              <div className="space-y-6">
+              <AiDailyGoals />
+              </div>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <RecentActivity />
+              <div className="space-y-6">
+              <TodaysWorkout />
+              <AiForecast />
+              </div>
+          </div>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <RecentActivity />
-            <div className="space-y-6">
-            <TodaysWorkout />
-            <AiForecast />
-            </div>
-        </div>
-        </div>
+        <Footer />
+      </>
     );
 }
 

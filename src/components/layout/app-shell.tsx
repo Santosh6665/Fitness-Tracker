@@ -13,6 +13,7 @@ import {
   Bot,
   User,
   Activity,
+  NotebookPen,
 } from "lucide-react";
 
 import {
@@ -31,6 +32,7 @@ import { Logo } from "@/components/icons/logo";
 import { cn } from "@/lib/utils";
 import { UserNav } from "@/components/layout/user-nav";
 import { useAuth } from "@/components/auth/auth-provider";
+import { Footer } from "./footer";
 
 const navItems = [
   { href: "/", icon: LayoutDashboard, label: "Dashboard" },
@@ -127,9 +129,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>
-      <SidebarInset className="bg-background">
+      <SidebarInset className="bg-background flex flex-col min-h-screen">
         <PageHeader />
         <main className="flex-1 p-4 sm:px-6 sm:py-4">{children}</main>
+        {pathname !== '/' && <Footer />}
       </SidebarInset>
     </SidebarProvider>
   );
