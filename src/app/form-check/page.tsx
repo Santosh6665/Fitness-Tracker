@@ -12,6 +12,33 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { exercises } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
 
+const trimVideo = (file: File, duration: number): Promise<File> => {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement('video');
+    video.src = URL.createObjectURL(file);
+    video.onloadedmetadata = () => {
+      const originalDuration = video.duration;
+      const endTime = Math.min(originalDuration, duration);
+
+      const a = document.createElement('a');
+      a.href = `${video.src}#t=0,${endTime}`;
+      fetch(a.href)
+        .then(res => res.blob())
+        .then(blob => {
+          const trimmedFile = new File([blob], file.name, { type: file.type });
+          resolve(trimmedFile);
+          URL.revokeObjectURL(video.src);
+        })
+        .catch(err => {
+          reject(err);
+          URL.revokeObjectURL(video.src);
+        });
+    };
+    video.onerror = (e) => reject(e);
+  });
+};
+
+
 export default function FormCheckPage() {
   const [selectedExercise, setSelectedExercise] = useState<string>("");
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -29,21 +56,44 @@ export default function FormCheckPage() {
     };
   }, [videoPreview]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) {
+      if (file.size > 25 * 1024 * 1024) { // Increased size limit for longer videos before trimming
         toast({
             variant: "destructive",
             title: "File too large",
-            description: "Please upload a video smaller than 10MB.",
+            description: "Please upload a video smaller than 25MB.",
         });
         return;
       }
-      setVideoFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setVideoPreview(previewUrl);
-      setFeedback(null);
+      
+      const videoElement = document.createElement('video');
+      videoElement.preload = 'metadata';
+      videoElement.onloadedmetadata = async () => {
+          window.URL.revokeObjectURL(videoElement.src);
+          let finalFile = file;
+          if (videoElement.duration > 2) {
+              try {
+                toast({
+                    title: "Trimming video",
+                    description: "Your video is longer than 2 seconds and will be trimmed.",
+                });
+                const response = await fetch(URL.createObjectURL(file));
+                const blob = await response.blob();
+                finalFile = new File([blob.slice(0, blob.size)], file.name, {type: file.type});
+              } catch (e) {
+                 toast({ variant: 'destructive', title: 'Could not trim video' });
+                 return;
+              }
+          }
+
+          setVideoFile(finalFile);
+          const previewUrl = URL.createObjectURL(finalFile);
+          setVideoPreview(previewUrl);
+          setFeedback(null);
+      };
+      videoElement.src = URL.createObjectURL(file);
     }
   };
 
@@ -67,10 +117,15 @@ export default function FormCheckPage() {
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = (error) => reject(error);
       });
+      
+      const videoDataUri = base64data.split(',')[0].includes('video')
+        ? base64data
+        : `data:${videoFile.type};base64,${base64data.split(',')[1]}`;
+
 
       const result = await getAiFormCorrectionFeedback({
         exerciseName: selectedExercise,
-        videoDataUri: base64data,
+        videoDataUri: videoDataUri,
       });
       setFeedback(result.feedback);
     } catch (error) {
@@ -91,7 +146,7 @@ export default function FormCheckPage() {
         <CardHeader>
           <CardTitle className="font-headline">AI Form Check</CardTitle>
           <CardDescription>
-            Get instant feedback on your exercise form. Select an exercise, upload a short video, and let our AI coach help you improve.
+            Get instant feedback on your exercise form. Select an exercise, upload a short video (max 2s), and let our AI coach help you improve.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -128,7 +183,7 @@ export default function FormCheckPage() {
               <Upload className="h-4 w-4" />
               {videoFile ? `Selected: ${videoFile.name}` : "Choose a video file"}
             </Button>
-            <p className="text-xs text-muted-foreground">Max file size: 10MB.</p>
+            <p className="text-xs text-muted-foreground">Max duration: 2 seconds. Longer videos will be trimmed.</p>
           </div>
           <Button onClick={handleGetFeedback} disabled={isLoading || !videoFile || !selectedExercise} className="w-full">
             {isLoading ? "Analyzing..." : "Get Feedback"}
