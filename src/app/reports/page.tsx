@@ -181,7 +181,7 @@ function DailyReport() {
                             <span className="text-sm font-normal text-muted-foreground">
                                 {" "}/ {data?.target || 0} {meta.unit}
                             </span>
-                            </div_>
+                            </div>
                         </CardContent>
                     </Card>
                 )
