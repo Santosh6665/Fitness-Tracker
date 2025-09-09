@@ -101,7 +101,7 @@ function DailyReport() {
                 <CardContent><Skeleton className="h-32 w-full" /></CardContent>
             </Card>
         </div>
-    )
+    );
   }
 
   return (
@@ -423,3 +423,5 @@ export default function ReportsPage() {
     </Tabs>
   );
 }
+
+    

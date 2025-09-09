@@ -180,7 +180,7 @@ function RecentActivity() {
                 <CardTitle className="font-headline">Recent Activity</CardTitle>
                 <CardDescription>Your latest workout and nutrition logs.</CardDescription>
             </div>
-             <Button variant="outline" size="sm" onClick={() => fetchActivity()} disabled={isLoading}>
+             <Button variant="outline" size="sm" onClick={() => fetchActivity()} disabled={isLoading} className="mt-2 sm:mt-0">
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
                 Refresh
             </Button>

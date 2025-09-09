@@ -111,7 +111,7 @@ function RecentActivity() {
                 <CardTitle className="font-headline">Recent Activity</CardTitle>
                 <CardDescription>Your latest workout log from the database.</CardDescription>
             </div>
-             <Button variant="outline" size="sm" onClick={fetchWorkouts} disabled={isLoading}>
+             <Button variant="outline" size="sm" onClick={fetchWorkouts} disabled={isLoading} className="mt-2 sm:mt-0">
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
                 Refresh
             </Button>
@@ -150,7 +150,7 @@ function RecentActivity() {
                     ))
                 ) : (
                     <TableRow>
-                        <TableCell colSpan={3} className="text-center text-muted-foreground">
+                        <TableCell colSpan={3} className="text-center text-muted-foreground h-24">
                             No workout history found.
                         </TableCell>
                     </TableRow>

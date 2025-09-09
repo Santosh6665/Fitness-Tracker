@@ -69,7 +69,7 @@ export default function FormCheckPage() {
       }
       
       const videoElement = document.createElement('video');
-      videoElement.preload = 'metadata';
+      videoElement.src = URL.createObjectURL(file);
       videoElement.onloadedmetadata = async () => {
           window.URL.revokeObjectURL(videoElement.src);
           let finalFile = file;
@@ -222,3 +222,5 @@ export default function FormCheckPage() {
     </div>
   );
 }
+
+    

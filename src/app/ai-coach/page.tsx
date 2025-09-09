@@ -151,7 +151,7 @@ export default function AiCoachPage() {
                 onChange={(e) => setTextQuery(e.target.value)}
                 disabled={processingState !== 'idle'}
               />
-              <Button type="submit" disabled={processingState !== 'idle' || !textQuery.trim()}>
+              <Button type="submit" disabled={processingState !== 'idle' || !textQuery.trim()} size="icon">
                 <SendHorizonal />
                 <span className="sr-only">Send</span>
               </Button>
@@ -205,7 +205,7 @@ export default function AiCoachPage() {
                   <AvatarFallback><Bot /></AvatarFallback>
                 </Avatar>
               )}
-              <div className={cn("rounded-lg p-3 max-w-sm md:max-w-md", 
+              <div className={cn("rounded-lg p-3 max-w-[80%] sm:max-w-sm md:max-w-md", 
                 turn.speaker === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted')}>
                 <p>{turn.text}</p>
                 {turn.speaker === 'coach' && turn.audioUri && (
@@ -234,3 +234,5 @@ export default function AiCoachPage() {
     </div>
   );
 }
+
+    

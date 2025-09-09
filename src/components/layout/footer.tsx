@@ -10,7 +10,7 @@ export function Footer() {
 
   return (
     <footer className="bg-muted/50 text-muted-foreground mt-12 border-t">
-      <div className="container mx-auto px-6 lg:px-8 py-8">
+      <div className="container mx-auto px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Column 1: Team Info */}
           <div className="md:col-span-5 lg:col-span-4">
@@ -58,7 +58,7 @@ export function Footer() {
           </div>
         </div>
 
-        <Separator className="my-6 bg-border" />
+        <Separator className="my-4 bg-border" />
 
         <div className="text-center text-sm">
           <p>© {currentYear} CodeCrafters. Built for B.Tech Final Year Major Project.</p>
@@ -68,3 +68,5 @@ export function Footer() {
     </footer>
   );
 }
+
+    
