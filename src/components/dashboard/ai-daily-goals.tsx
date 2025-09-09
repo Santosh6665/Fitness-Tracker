@@ -87,22 +87,24 @@ export function AiDailyGoals() {
           </div>
         ) : goals.length > 0 ? (
           goals.map((goal, index) => (
-            <div key={index}>
-              <div className="flex justify-between items-center text-sm font-medium mb-1">
-                <span>{goal.name}</span>
-                <span className="text-muted-foreground">
-                  {goal.current} / {goal.target} {goal.unit}
-                </span>
+            <div key={index} className="flex items-center gap-4">
+              <div className="flex-1 space-y-1">
+                <div className="flex justify-between items-center text-sm font-medium">
+                  <span>{goal.name}</span>
+                  <span className="text-muted-foreground">
+                    {goal.current} / {goal.target} {goal.unit}
+                  </span>
+                </div>
+                <Progress
+                  value={(goal.current / goal.target) * 100}
+                  aria-label={`${goal.name} progress`}
+                />
               </div>
-              <Progress
-                value={(goal.current / goal.target) * 100}
-                aria-label={`${goal.name} progress`}
-              />
-              <div className="flex justify-end gap-2 mt-2">
-                <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => handleUpdateGoal(index, goal.current - getIncrementStep(goal.unit))}>
+              <div className="flex gap-2">
+                <Button size="icon" variant="outline" className="h-7 w-7 shrink-0" onClick={() => handleUpdateGoal(index, goal.current - getIncrementStep(goal.unit))}>
                     <Minus className="h-4 w-4"/>
                 </Button>
-                <Button size="icon" variant="outline" className="h-7 w-7" onClick={() => handleUpdateGoal(index, goal.current + getIncrementStep(goal.unit))}>
+                <Button size="icon" variant="outline" className="h-7 w-7 shrink-0" onClick={() => handleUpdateGoal(index, goal.current + getIncrementStep(goal.unit))}>
                     <Plus className="h-4 w-4"/>
                 </Button>
               </div>
