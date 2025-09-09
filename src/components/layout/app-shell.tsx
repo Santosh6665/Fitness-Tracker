@@ -66,7 +66,7 @@ function PageHeader() {
         "fixed left-2 top-2 z-50": isMobile,
         "-ml-14": !isMobile
       })} />
-      <h1 className="text-xl font-semibold font-headline">{getPageTitle()}</h1>
+      <h1 className="text-xl font-semibold font-headline pl-12 sm:pl-0">{getPageTitle()}</h1>
       <div className="ml-auto">
         {user && <UserNav user={user} />}
       </div>
@@ -137,5 +137,3 @@ export function AppShell({ children }: { children: ReactNode }) {
     </SidebarProvider>
   );
 }
-
-    
