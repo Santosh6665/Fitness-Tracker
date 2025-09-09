@@ -28,13 +28,11 @@ import { predictFutureProgress } from "@/ai/flows/predict-future-progress";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AiDailyGoals } from "@/components/dashboard/ai-daily-goals";
-import { generateRecentWorkouts, type RecentWorkout } from "@/ai/flows/generate-recent-workouts";
-import { recentWorkouts as staticRecentWorkouts } from "@/lib/data";
 import { useAuth } from "@/components/auth/auth-provider";
 import { getUserProfile } from "@/services/userService";
-import { UserProfile, DailyWorkoutLog } from "@/lib/types";
+import { UserProfile, DailyWorkoutLog, WorkoutEntry } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getTodaysWorkoutLog } from "@/services/workoutService";
+import { getTodaysWorkoutLog, getWorkoutHistory } from "@/services/workoutService";
 
 
 function AiForecast() {
@@ -102,21 +100,23 @@ function AiForecast() {
 }
 
 function RecentActivity() {
-    const [workouts, setWorkouts] = useState<RecentWorkout[]>(staticRecentWorkouts);
+    const [workouts, setWorkouts] = useState<WorkoutEntry[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
+    const { user } = useAuth();
 
     const fetchWorkouts = async () => {
+        if (!user) return;
         setIsLoading(true);
         try {
-            const result = await generateRecentWorkouts();
-            setWorkouts(result.workouts);
+            const result = await getWorkoutHistory(user.uid);
+            setWorkouts(result);
         } catch (error) {
             console.error("Failed to fetch recent workouts:", error);
             toast({
                 variant: "destructive",
                 title: "Failed to load activity",
-                description: "Could not fetch your recent workouts. This may be due to API rate limits. Please try again later.",
+                description: "Could not fetch your recent workouts. Please try again later.",
             });
         } finally {
             setIsLoading(false);
@@ -125,14 +125,14 @@ function RecentActivity() {
     
     useEffect(() => {
       fetchWorkouts();
-    }, [])
+    }, [user])
 
     return (
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <CardTitle className="font-headline">Recent Activity</CardTitle>
-                <CardDescription>Your latest workout log.</CardDescription>
+                <CardDescription>Your latest workout log from the database.</CardDescription>
             </div>
              <Button variant="outline" size="sm" onClick={fetchWorkouts} disabled={isLoading}>
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
@@ -144,24 +144,40 @@ function RecentActivity() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Date</TableHead>
-                  <TableHead>Workout</TableHead>
+                  <TableHead>Workouts</TableHead>
                   <TableHead className="text-right">Duration</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {workouts.map((workout, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="text-xs sm:text-sm">
-                      {workout.date}
-                    </TableCell>
-                    <TableCell className="font-medium text-xs sm:text-sm">
-                      {workout.type}
-                    </TableCell>
-                    <TableCell className="text-right text-xs sm:text-sm">
-                      {workout.duration}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {isLoading ? (
+                    Array.from({length: 3}).map((_, i) => (
+                        <TableRow key={i}>
+                            <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                            <TableCell><Skeleton className="h-5 w-12" /></TableCell>
+                            <TableCell className="text-right"><Skeleton className="h-5 w-16 ml-auto" /></TableCell>
+                        </TableRow>
+                    ))
+                ) : workouts.length > 0 ? (
+                    workouts.map((workout, index) => (
+                    <TableRow key={index}>
+                        <TableCell className="text-xs sm:text-sm">
+                        {workout.date}
+                        </TableCell>
+                        <TableCell className="font-medium text-xs sm:text-sm">
+                        {workout.sessions} {workout.sessions > 1 ? 'sessions' : 'session'}
+                        </TableCell>
+                        <TableCell className="text-right text-xs sm:text-sm">
+                        {workout.duration} min
+                        </TableCell>
+                    </TableRow>
+                    ))
+                ) : (
+                    <TableRow>
+                        <TableCell colSpan={3} className="text-center text-muted-foreground">
+                            No workout history found.
+                        </TableCell>
+                    </TableRow>
+                )}
               </TableBody>
             </Table>
           </CardContent>
@@ -337,3 +353,5 @@ export default function DashboardPage() {
         </div>
     );
 }
+
+    

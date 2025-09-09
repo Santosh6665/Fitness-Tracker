@@ -1,7 +1,7 @@
 
 import { db } from "@/firebase/client";
-import { DailyWorkoutLog, dailyWorkoutLogSchema } from "@/lib/types";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { DailyWorkoutLog, dailyWorkoutLogSchema, WorkoutEntry } from "@/lib/types";
+import { doc, setDoc, getDoc, collection, getDocs, orderBy, query, limit } from "firebase/firestore";
 import { format } from "date-fns";
 
 function getTodaysDate() {
@@ -41,3 +41,30 @@ export async function updateTodaysWorkoutLog(
     throw new Error("Unable to update workout log.");
   }
 }
+
+
+export async function getWorkoutHistory(userId: string): Promise<WorkoutEntry[]> {
+    try {
+        const historyCollection = collection(db, "users", userId, "workouts");
+        const q = query(historyCollection, orderBy('__name__', 'desc'), limit(10));
+        const querySnapshot = await getDocs(q);
+        
+        const history: WorkoutEntry[] = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            history.push({
+                date: doc.id,
+                sessions: data.sessions,
+                duration: data.duration,
+                calories: data.calories,
+            });
+        });
+        return history;
+
+    } catch (error) {
+        console.error("Error getting workout history: ", error);
+        throw new Error("Unable to retrieve workout history.");
+    }
+}
+
+    

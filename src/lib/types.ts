@@ -37,3 +37,15 @@ export const dailyWorkoutLogSchema = z.object({
 });
 
 export type DailyWorkoutLog = z.infer<typeof dailyWorkoutLogSchema>;
+
+
+export const workoutEntrySchema = z.object({
+    date: z.string(),
+    sessions: z.number(),
+    duration: z.number(),
+    calories: z.number(),
+});
+
+export type WorkoutEntry = z.infer<typeof workoutEntrySchema>;
+
+    
