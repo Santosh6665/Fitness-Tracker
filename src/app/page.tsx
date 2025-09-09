@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bot, Loader2, Sparkles, RefreshCw, LineChart, Activity, Timer, Flame, Salad } from "lucide-react";
+import { Bot, Loader2, Sparkles, RefreshCw, LineChart, Activity, Timer, Flame, Salad, Trophy } from "lucide-react";
 import Link from "next/link";
 import {
   Card,
@@ -30,10 +30,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AiDailyGoals } from "@/components/dashboard/ai-daily-goals";
 import { useAuth } from "@/components/auth/auth-provider";
 import { getUserProfile } from "@/services/userService";
-import { UserProfile, DailyWorkoutLog, WorkoutEntry, ActivityEntry, DailyNutritionLog } from "@/lib/types";
+import { UserProfile, DailyWorkoutLog, ActivityEntry } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTodaysWorkoutLog, getWorkoutHistory } from "@/services/workoutService";
 import { getNutritionHistory } from "@/services/nutritionService";
+import { getGoalsHistory } from "@/services/goalService";
 
 
 function AiForecast() {
@@ -112,6 +113,7 @@ function RecentActivity() {
         try {
             const workoutHistory = await getWorkoutHistory(user.uid);
             const nutritionHistory = await getNutritionHistory(user.uid);
+            const goalsHistory = await getGoalsHistory(user.uid);
 
             const workoutActivities: ActivityEntry[] = workoutHistory.map(w => ({
                 date: w.date,
@@ -127,7 +129,17 @@ function RecentActivity() {
                 value: `${n.calories.current} kcal`,
             }));
 
-            const combined = [...workoutActivities, ...mealActivities];
+            const goalActivities: ActivityEntry[] = goalsHistory
+              .filter(g => g.goals.every(goal => goal.current >= goal.target))
+              .map(g => ({
+                date: g.date,
+                type: 'goals',
+                description: 'All Daily Goals Achieved',
+                value: `+${g.goals.length} Goals`,
+              }));
+
+
+            const combined = [...workoutActivities, ...mealActivities, ...goalActivities];
             combined.sort((a, b) => b.date.localeCompare(a.date));
 
             setActivity(combined.slice(0, 10));
@@ -145,8 +157,17 @@ function RecentActivity() {
     };
     
     useEffect(() => {
-      fetchActivity();
+      if (user) {
+        fetchActivity();
+      }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user])
+
+    const iconMap = {
+      workout: <Activity className="h-4 w-4 text-primary" />,
+      meal: <Salad className="h-4 w-4 text-green-500" />,
+      goals: <Trophy className="h-4 w-4 text-yellow-500" />,
+    }
 
     return (
         <Card className="lg:col-span-2">
@@ -155,7 +176,7 @@ function RecentActivity() {
                 <CardTitle className="font-headline">Recent Activity</CardTitle>
                 <CardDescription>Your latest workout and nutrition logs.</CardDescription>
             </div>
-             <Button variant="outline" size="sm" onClick={fetchActivity} disabled={isLoading}>
+             <Button variant="outline" size="sm" onClick={() => fetchActivity()} disabled={isLoading}>
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
                 Refresh
             </Button>
@@ -187,7 +208,7 @@ function RecentActivity() {
                             {item.date}
                         </TableCell>
                         <TableCell className="font-medium text-xs sm:text-sm flex items-center gap-2">
-                          {item.type === 'workout' ? <Activity className="h-4 w-4 text-primary" /> : <Salad className="h-4 w-4 text-green-500" />}
+                          {iconMap[item.type]}
                           <span className="capitalize">{item.type}</span>
                         </TableCell>
                         <TableCell className="text-xs sm:text-sm">

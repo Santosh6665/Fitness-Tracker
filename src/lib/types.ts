@@ -51,7 +51,7 @@ export type WorkoutEntry = z.infer<typeof workoutEntrySchema>;
 
 export type ActivityEntry = {
     date: string;
-    type: 'workout' | 'meal';
+    type: 'workout' | 'meal' | 'goals';
     description: string;
     value: string;
 };

@@ -1,7 +1,7 @@
 
 import { db } from "@/firebase/client";
-import { DailyGoal, dailyGoalsLogSchema } from "@/lib/types";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { DailyGoal, dailyGoalsLogSchema, DailyGoalsLog } from "@/lib/types";
+import { doc, setDoc, getDoc, collection, getDocs, query } from "firebase/firestore";
 import { format } from "date-fns";
 
 function getTodaysDate() {
@@ -45,4 +45,30 @@ export async function updateTodaysGoals(
     console.error("Error updating goals log: ", error);
     throw new Error("Unable to update goals log.");
   }
+}
+
+export async function getGoalsHistory(userId: string): Promise<({date: string} & DailyGoalsLog)[]> {
+    try {
+        const historyCollection = collection(db, "users", userId, "goals");
+        const q = query(historyCollection);
+        const querySnapshot = await getDocs(q);
+        
+        const history: ({date: string} & DailyGoalsLog)[] = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const parsed = dailyGoalsLogSchema.safeParse(data);
+            if (parsed.success) {
+                history.push({
+                    date: doc.id,
+                    ...parsed.data,
+                });
+            }
+        });
+
+        return history;
+
+    } catch (error) {
+        console.error("Error getting goals history: ", error);
+        throw new Error("Unable to retrieve goals history.");
+    }
 }
