@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Activity, Edit, Flame, Loader2, Timer } from "lucide-react";
+import { Activity, Edit, Flame, Loader2, RefreshCw, Timer } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/components/auth/auth-provider";
 import { getTodaysWorkoutLog, updateTodaysWorkoutLog } from "@/services/workoutService";
@@ -40,7 +40,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { exercises } from "@/lib/data";
+import { exercises, recentWorkouts as staticRecentWorkouts } from "@/lib/data";
+import { generateRecentWorkouts, type RecentWorkout } from "@/ai/flows/generate-recent-workouts";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 
 const initialWorkoutData: DailyWorkoutLog = {
@@ -61,6 +70,74 @@ type ManualLogData = {
     calories: number;
 };
 
+
+function RecentActivity() {
+    const [workouts, setWorkouts] = useState<RecentWorkout[]>(staticRecentWorkouts);
+    const [isLoading, setIsLoading] = useState(false);
+    const { toast } = useToast();
+
+    const fetchWorkouts = async () => {
+        setIsLoading(true);
+        try {
+            const result = await generateRecentWorkouts();
+            setWorkouts(result.workouts);
+        } catch (error) {
+            console.error("Failed to fetch recent workouts:", error);
+            toast({
+                variant: "destructive",
+                title: "Failed to load activity",
+                description: "Could not fetch your recent workouts. This may be due to API rate limits. Please try again later.",
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    useEffect(() => {
+      fetchWorkouts();
+    }, [])
+
+    return (
+        <Card>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <CardTitle className="font-headline">Recent Activity</CardTitle>
+                <CardDescription>Your latest workout log.</CardDescription>
+            </div>
+             <Button variant="outline" size="sm" onClick={fetchWorkouts} disabled={isLoading}>
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+                Refresh
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Workout</TableHead>
+                  <TableHead className="text-right">Duration</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {workouts.map((workout, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="text-xs sm:text-sm">
+                      {workout.date}
+                    </TableCell>
+                    <TableCell className="font-medium text-xs sm:text-sm">
+                      {workout.type}
+                    </TableCell>
+                    <TableCell className="text-right text-xs sm:text-sm">
+                      {workout.duration}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+    )
+}
 
 export default function WorkoutsPage() {
   const [workoutLog, setWorkoutLog] = useState<DailyWorkoutLog | null>(null);
@@ -150,6 +227,7 @@ export default function WorkoutsPage() {
           )}
         </CardContent>
       </Card>
+      <RecentActivity />
     </div>
   );
 }
