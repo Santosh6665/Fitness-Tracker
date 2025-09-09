@@ -10,14 +10,21 @@ const GetAiCoachResponseInputSchema = z.object({
     .string()
     .describe(
       "A voice recording from the user, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:audio/webm;base64,<encoded_data>'."
-    ),
+    )
+    .optional(),
+  textQuery: z
+    .string()
+    .describe('A text query from the user.')
+    .optional(),
+}).refine(data => data.audioDataUri || data.textQuery, {
+    message: "Either an audio URI or a text query must be provided.",
 });
 export type GetAiCoachResponseInput = z.infer<
   typeof GetAiCoachResponseInputSchema
 >;
 
 const GetAiCoachResponseOutputSchema = z.object({
-  userQuery: z.string().describe('The transcribed text from the user audio.'),
+  userQuery: z.string().describe('The transcribed text from the user audio or the input text.'),
   coachResponseText: z
     .string()
     .describe("The AI coach's text response."),
@@ -71,16 +78,23 @@ const getAiCoachResponseFlow = ai.defineFlow(
     outputSchema: GetAiCoachResponseOutputSchema,
   },
   async (input) => {
-    const { text: userQuery } = await ai.generate({
-      model: 'googleai/gemini-2.5-flash-lite',
-      prompt: [
-        { text: 'Transcribe the following audio.'},
-        { media: { url: input.audioDataUri } }
-      ],
-    });
+    let userQuery: string | undefined;
+
+    if (input.textQuery) {
+        userQuery = input.textQuery;
+    } else if (input.audioDataUri) {
+        const { text } = await ai.generate({
+            model: 'googleai/gemini-2.5-flash-lite',
+            prompt: [
+                { text: 'Transcribe the following audio.'},
+                { media: { url: input.audioDataUri } }
+            ],
+        });
+        userQuery = text;
+    }
 
     if (!userQuery) {
-      throw new Error('Audio transcription failed.');
+      throw new Error('Could not determine user query.');
     }
 
     const { text: coachResponseText } = await ai.generate({
