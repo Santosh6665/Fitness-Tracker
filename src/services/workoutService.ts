@@ -1,7 +1,7 @@
 
 import { db } from "@/firebase/client";
 import { DailyWorkoutLog, dailyWorkoutLogSchema, WorkoutEntry } from "@/lib/types";
-import { doc, setDoc, getDoc, collection, getDocs, orderBy, query, limit } from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, getDocs, query, limit } from "firebase/firestore";
 import { format } from "date-fns";
 
 function getTodaysDate() {
@@ -46,7 +46,7 @@ export async function updateTodaysWorkoutLog(
 export async function getWorkoutHistory(userId: string): Promise<WorkoutEntry[]> {
     try {
         const historyCollection = collection(db, "users", userId, "workouts");
-        const q = query(historyCollection, orderBy('__name__', 'desc'), limit(10));
+        const q = query(historyCollection, limit(30));
         const querySnapshot = await getDocs(q);
         
         const history: WorkoutEntry[] = [];
@@ -59,7 +59,10 @@ export async function getWorkoutHistory(userId: string): Promise<WorkoutEntry[]>
                 calories: data.calories,
             });
         });
-        return history;
+
+        history.sort((a, b) => b.date.localeCompare(a.date));
+        
+        return history.slice(0, 10);
 
     } catch (error) {
         console.error("Error getting workout history: ", error);
