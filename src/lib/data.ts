@@ -31,7 +31,7 @@ export const exercises = [
     equipment: "Barbell, Bench",
     instructions: "Lie on a flat bench with your feet firmly on the ground. Grip the barbell with hands slightly wider than shoulder-width apart. Lift the bar from the rack and hold it straight over your chest with arms locked. Lower the bar slowly until it touches your mid-chest, then push it back up to the starting position.",
     videoUrl: "https://www.youtube.com/embed/rT7DgCr-3pg",
-    imageUrl: "https://picsum.photos/seed/bench-press/600/400",
+    imageUrl: "/exercises/bench-press.jpg",
     dataAiHint: "bench press"
   },
   {
@@ -40,7 +40,7 @@ export const exercises = [
     equipment: "Barbell, Squat Rack",
     instructions: "Stand with your feet shoulder-width apart, with the barbell resting on your upper back. Keeping your chest up and back straight, lower your body as if sitting in a chair. Go as low as you can comfortably, ideally until your thighs are parallel to the floor. Push through your heels to return to the starting position.",
     videoUrl: "https://www.youtube.com/embed/bEv6CCg2BC8",
-    imageUrl: "https://picsum.photos/seed/squat/600/400",
+    imageUrl: "/exercises/squat.jpg",
     dataAiHint: "man squatting"
   },
   {
@@ -49,7 +49,7 @@ export const exercises = [
     equipment: "Barbell",
     instructions: "Stand with your mid-foot under the barbell. Bend over and grab the bar with a shoulder-width grip. Bend your knees until your shins touch the bar. Lift your chest up and straighten your lower back. Stand up with the weight, keeping the bar close to your body.",
     videoUrl: "https://www.youtube.com/embed/ytGaGIn3SjE",
-    imageUrl: "https://picsum.photos/seed/deadlift/600/400",
+    imageUrl: "/exercises/deadlift.jpg",
     dataAiHint: "deadlift workout"
   },
   {
@@ -58,7 +58,7 @@ export const exercises = [
     equipment: "Barbell",
     instructions: "Stand with the bar on your front shoulders, hands slightly wider than shoulder-width. Press the bar over your head until your arms are fully extended. Lower it back to your shoulders under control.",
     videoUrl: "https://www.youtube.com/embed/2yjwXTZQDDI",
-    imageUrl: "https://picsum.photos/seed/overhead-press/600/400",
+    imageUrl: "/exercises/overhead-press.jpg",
     dataAiHint: "weight lifting"
   },
   {
@@ -67,7 +67,7 @@ export const exercises = [
     equipment: "Pull-up Bar",
     instructions: "Grab the pull-up bar with your palms facing away from you and your hands shoulder-width apart. Hang with your arms fully extended. Pull your body up until your chin is over the bar. Lower yourself back down with control.",
     videoUrl: "https://www.youtube.com/embed/aAggnpPyR6A",
-    imageUrl: "https://picsum.photos/seed/pull-up/600/400",
+    imageUrl: "/exercises/pull-up.jpg",
     dataAiHint: "man pullup"
   },
   {
@@ -76,7 +76,7 @@ export const exercises = [
     equipment: "Dumbbells",
     instructions: "Stand with your feet together, holding a dumbbell in each hand. Step forward with one leg and lower your hips until both knees are bent at a 90-degree angle. Push back to the starting position and repeat with the other leg.",
     videoUrl: "https://www.youtube.com/embed/D7KaRcUTQeE",
-    imageUrl: "https://picsum.photos/seed/lunges/600/400",
+    imageUrl: "/exercises/lunges.jpg",
     dataAiHint: "lunge exercise"
   },
   {
@@ -85,7 +85,7 @@ export const exercises = [
     equipment: "None",
     instructions: "Lie face down and prop yourself up on your forearms and toes, keeping your body in a straight line from head to heels. Engage your core and hold the position.",
     videoUrl: "https://www.youtube.com/embed/ASdvN_XEl_c",
-    imageUrl: "https://picsum.photos/seed/plank/600/400",
+    imageUrl: "/exercises/plank.jpg",
     dataAiHint: "woman planking"
   },
   {
@@ -94,7 +94,7 @@ export const exercises = [
     equipment: "Dumbbells",
     instructions: "Stand or sit holding a dumbbell in each hand with an underhand grip. Curl the weights up towards your shoulders, keeping your elbows stationary. Squeeze your biceps at the top, then lower the weights back down slowly.",
     videoUrl: "https://www.youtube.com/embed/KzZILhT_zCg",
-    imageUrl: "https://picsum.photos/seed/bicep-curl/600/400",
+    imageUrl: "/exercises/bicep-curl.jpg",
     dataAiHint: "bicep curl"
   }
 ];
