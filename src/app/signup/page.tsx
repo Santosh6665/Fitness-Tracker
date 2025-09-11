@@ -214,7 +214,7 @@ export default function SignUpPage() {
         <CardFooter className="text-center text-sm flex justify-center">
           <p>
             Already have an account?{" "}
-            <Link href="/login" className="underline">
+            <Link href="/login" className="font-bold text-primary hover:underline">
               Login
             </Link>
           </p>
