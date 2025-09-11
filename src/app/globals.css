@@ -81,5 +81,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    scrollbar-width: none; /* For Firefox */
+  }
+  body::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
   }
 }
