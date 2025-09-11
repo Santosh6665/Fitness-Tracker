@@ -107,7 +107,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
           </Link>
         </SidebarHeader>
-        <SidebarContent>
+        <SidebarContent className="flex flex-col justify-between">
           <SidebarMenu>
             {navItems.map((item) => (
               <SidebarMenuItem key={item.href}>
@@ -124,13 +124,13 @@ export function AppShell({ children }: { children: ReactNode }) {
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
+          <Footer />
         </SidebarContent>
       </Sidebar>
       <SidebarInset className="bg-background flex flex-col min-h-screen">
         <PageHeader />
         <main className="flex-1 p-4 sm:px-6 sm:py-4">
           {children}
-          <Footer />
         </main>
       </SidebarInset>
     </SidebarProvider>
