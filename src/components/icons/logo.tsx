@@ -1,5 +1,6 @@
 
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 export function Logo({ className }: { className?: string }) {
   return (
@@ -8,7 +9,7 @@ export function Logo({ className }: { className?: string }) {
       alt="AI Powered Fitness Tracker Logo"
       width={48}
       height={48}
-      className={className}
+      className={cn("rounded-full", className)}
       priority 
     />
   );
