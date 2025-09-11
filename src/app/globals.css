@@ -81,9 +81,19 @@
   }
   body {
     @apply bg-background text-foreground;
-    scrollbar-width: none; /* For Firefox */
   }
+  
   body::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Opera */
+    width: 5px;
+  }
+  
+  body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  body::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+    border-radius: 6px;
+    border: 3px solid transparent;
   }
 }
