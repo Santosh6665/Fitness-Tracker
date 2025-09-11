@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Logo } from "@/components/icons/logo";
 
@@ -40,6 +40,7 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const [configError, setConfigError] = useState(false);
@@ -138,7 +139,19 @@ export default function LoginPage() {
                       <FormLabel>Password</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="password" placeholder="password" {...field} disabled={isLoading}/>
+                      <div className="relative">
+                        <Input type={showPassword ? "text" : "password"} placeholder="password" {...field} disabled={isLoading}/>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOff /> : <Eye />}
+                          <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
