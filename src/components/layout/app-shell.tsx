@@ -128,8 +128,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       </Sidebar>
       <SidebarInset className="bg-background flex flex-col min-h-screen">
         <PageHeader />
-        <main className="flex-1 p-4 sm:px-6 sm:py-4">{children}</main>
-        {pathname !== '/' && <Footer />}
+        <main className="flex-1 p-4 sm:px-6 sm:py-4">
+          {children}
+          <Footer />
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

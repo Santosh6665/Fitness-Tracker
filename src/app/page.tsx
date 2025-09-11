@@ -344,35 +344,30 @@ export default function DashboardPage() {
     const { user } = useAuth();
 
     return (
-      <>
-        <div className="flex flex-col gap-6">
-          <Card>
-              <CardHeader>
-              <CardTitle className="font-headline text-2xl sm:text-3xl">
-                  Welcome back, {user?.displayName || 'Fitness Warrior'}!
-              </CardTitle>
-              <CardDescription>
-                  Here's a snapshot of your fitness journey. Keep up the great work!
-              </CardDescription>
-              </CardHeader>
-          </Card>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <ProgressOverview />
-              <div className="space-y-6">
-              <AiDailyGoals />
-              </div>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <RecentActivity />
-              <div className="space-y-6">
-              <TodaysWorkout />
-              <AiForecast />
-              </div>
-          </div>
+      <div className="flex flex-col gap-6">
+        <Card>
+            <CardHeader>
+            <CardTitle className="font-headline text-2xl sm:text-3xl">
+                Welcome back, {user?.displayName || 'Fitness Warrior'}!
+            </CardTitle>
+            <CardDescription>
+                Here's a snapshot of your fitness journey. Keep up the great work!
+            </CardDescription>
+            </CardHeader>
+        </Card>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <ProgressOverview />
+            <div className="space-y-6">
+            <AiDailyGoals />
+            </div>
         </div>
-        <Footer />
-      </>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <RecentActivity />
+            <div className="space-y-6">
+            <TodaysWorkout />
+            <AiForecast />
+            </div>
+        </div>
+      </div>
     );
 }
-
-    
