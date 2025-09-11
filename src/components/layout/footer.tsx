@@ -17,20 +17,12 @@ export function Footer() {
             <div className="flex items-center gap-3 mb-4">
               <Logo />
               <h2 className="text-xl font-bold font-headline text-foreground">
-                𝘾𝙤𝙙𝙚𝘾𝙧𝙖𝙛𝙩𝙚𝙧𝙨
+                AI Powered Fitness Tracker
               </h2>
             </div>
             <p className="text-sm ">
               AI‑Powered Fitness Tracker — personalized insights for workouts, nutrition, recovery, and goals.
             </p>
-            <div className="mt-6">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Team Members</h3>
-                <ul className="mt-4 space-y-2 text-sm">
-                    <li>Santosh Chaudhary — <span className="font-semibold">Lead & Major Contributor</span></li>
-                    <li>Abneesh Dubey</li>
-                    <li>Subham Singh</li>
-                </ul>
-            </div>
           </div>
 
           {/* Spacer Column */}

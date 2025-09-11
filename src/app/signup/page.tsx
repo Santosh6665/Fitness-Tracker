@@ -113,7 +113,7 @@ export default function SignUpPage() {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
            <div className="flex justify-center mb-4">
-            <Logo className="h-16 w-16" />
+            <Logo />
           </div>
           <h1 className="text-xl font-bold tracking-tight mb-2">AI Powered Fitness Tracker</h1>
           <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
