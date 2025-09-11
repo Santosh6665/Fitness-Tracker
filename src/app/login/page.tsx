@@ -90,9 +90,6 @@ export default function LoginPage() {
           </div>
           <h1 className="text-xl font-bold tracking-tight mb-2">AI Powered Fitness Tracker</h1>
           <CardTitle className="text-2xl font-headline">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
         </CardHeader>
         <CardContent>
            {configError && (
