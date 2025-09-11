@@ -32,6 +32,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { createUserProfile } from "@/services/userService";
+import { Logo } from "@/components/icons/logo";
 
 const formSchema = z
   .object({
@@ -110,7 +111,10 @@ export default function SignUpPage() {
   return (
     <div className="flex h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-sm">
-        <CardHeader>
+        <CardHeader className="text-center">
+           <div className="flex justify-center mb-4">
+            <Logo className="h-16 w-16" />
+          </div>
           <CardTitle className="text-2xl font-headline">Sign Up</CardTitle>
           <CardDescription>
             Enter your information to create an account
@@ -135,7 +139,7 @@ export default function SignUpPage() {
                   login
                 </Link>{' '}
                 instead.
-              </AlertDescription>
+              </Alerc/components/icons/logo.tsxertDescription>
             </Alert>
           )}
           <Form {...form}>
@@ -206,7 +210,7 @@ export default function SignUpPage() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="text-sm">
+        <CardFooter className="text-center text-sm flex justify-center">
           <p>
             Already have an account?{" "}
             <Link href="/login" className="underline">

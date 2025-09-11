@@ -31,6 +31,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Logo } from "@/components/icons/logo";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
@@ -83,7 +84,10 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-sm">
-        <CardHeader>
+        <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+            <Logo className="h-16 w-16" />
+          </div>
           <CardTitle className="text-2xl font-headline">Login</CardTitle>
           <CardDescription>
             Enter your email below to login to your account
@@ -146,7 +150,7 @@ export default function LoginPage() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="text-sm">
+        <CardFooter className="text-center text-sm flex justify-center">
           <p>
             Don't have an account?{" "}
             <Link href="/signup" className="underline">
