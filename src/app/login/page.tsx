@@ -120,7 +120,7 @@ export default function LoginPage() {
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="m@example.com"
+                        placeholder="s@gmail.com"
                         {...field}
                         disabled={isLoading}
                       />
@@ -138,7 +138,7 @@ export default function LoginPage() {
                       <FormLabel>Password</FormLabel>
                     </div>
                     <FormControl>
-                      <Input type="password" {...field} disabled={isLoading}/>
+                      <Input type="password" placeholder="password" {...field} disabled={isLoading}/>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -152,10 +152,10 @@ export default function LoginPage() {
           </Form>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="underline">
-              Sign up
-            </Link>
           </div>
+           <Button variant="secondary" className="w-full mt-2" asChild>
+              <Link href="/signup">Sign up</Link>
+            </Button>
         </CardContent>
       </Card>
     </div>
