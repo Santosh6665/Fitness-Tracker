@@ -139,7 +139,7 @@ export default function SignUpPage() {
                   login
                 </Link>{' '}
                 instead.
-              </Alerc/components/icons/logo.tsxertDescription>
+              </AlertDescription>
             </Alert>
           )}
           <Form {...form}>
