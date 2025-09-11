@@ -9,13 +9,13 @@ import { auth } from "@/firebase/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import Image from 'next/image';
 
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -82,81 +82,100 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <Logo className="h-16 w-16" />
-          </div>
-          <h1 className="text-xl font-bold tracking-tight mb-2">AI Powered Fitness Tracker</h1>
-          <CardTitle className="text-2xl font-headline">Login</CardTitle>
-        </CardHeader>
-        <CardContent>
-           {configError && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertTitle>Action Required</AlertTitle>
-              <AlertDescription>
-                To fix this, you must enable Email/Password sign-in in the
-                Firebase console for your project.
-              </AlertDescription>
-            </Alert>
-          )}
-          {credentialError && (
-             <Alert variant="destructive" className="mb-4">
-              <AlertTitle>Login Failed</AlertTitle>
-              <AlertDescription>
-                The email or password you entered is incorrect. Please try again.
-              </AlertDescription>
-            </Alert>
-          )}
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="m@example.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Login
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="text-center text-sm flex justify-center">
-          <p>
-            Don't have an account?{" "}
-            <Link href="/signup" className="underline">
-              Sign up
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+     <div className="w-full lg:grid lg:min-h-[100vh] lg:grid-cols-2 xl:min-h-[100vh]">
+      <div className="flex items-center justify-center py-12">
+        <Card className="mx-auto grid w-[350px] gap-6 border-0 shadow-none sm:border sm:shadow-sm">
+          <CardHeader className="text-center">
+             <div className="flex justify-center mb-4">
+              <Logo className="h-16 w-16" />
+            </div>
+            <h1 className="text-xl font-bold tracking-tight mb-2">AI Powered Fitness Tracker</h1>
+            <CardTitle className="text-3xl font-bold font-headline">Login</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {configError && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertTitle>Action Required</AlertTitle>
+                <AlertDescription>
+                  To fix this, you must enable Email/Password sign-in in the
+                  Firebase console for your project.
+                </AlertDescription>
+              </Alert>
+            )}
+            {credentialError && (
+               <Alert variant="destructive" className="mb-4">
+                <AlertTitle>Login Failed</AlertTitle>
+                <AlertDescription>
+                  The email or password you entered is incorrect. Please try again.
+                </AlertDescription>
+              </Alert>
+            )}
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="m@example.com"
+                          {...field}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                       <div className="flex items-center">
+                        <FormLabel>Password</FormLabel>
+                         <Link
+                          href="#"
+                          className="ml-auto inline-block text-sm underline"
+                        >
+                          Forgot your password?
+                        </Link>
+                      </div>
+                      <FormControl>
+                        <Input type="password" {...field} disabled={isLoading}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Login
+                </Button>
+              </form>
+            </Form>
+            <div className="mt-4 text-center text-sm">
+              Don&apos;t have an account?{" "}
+              <Link href="/signup" className="underline">
+                Sign up
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+       <div className="hidden bg-muted lg:block">
+        <Image
+          src="https://picsum.photos/seed/fitness-login/1200/1800"
+          alt="Woman doing yoga"
+          data-ai-hint="woman yoga"
+          width="1200"
+          height="1800"
+          className="h-full w-full object-cover dark:brightness-[0.3] dark:grayscale"
+        />
+      </div>
     </div>
   );
 }
