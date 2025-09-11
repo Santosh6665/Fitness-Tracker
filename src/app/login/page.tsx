@@ -152,10 +152,10 @@ export default function LoginPage() {
           </Form>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
+            <Link href="/signup" className="font-bold text-primary hover:underline">
+              Sign up
+            </Link>
           </div>
-           <Button variant="secondary" className="w-full mt-2" asChild>
-              <Link href="/signup">Sign up</Link>
-            </Button>
         </CardContent>
       </Card>
     </div>
