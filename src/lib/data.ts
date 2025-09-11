@@ -66,7 +66,7 @@ export const exercises = [
     muscleGroup: "Back",
     equipment: "Pull-up Bar",
     instructions: "Grab the pull-up bar with your palms facing away from you and your hands shoulder-width apart. Hang with your arms fully extended. Pull your body up until your chin is over the bar. Lower yourself back down with control.",
-    videoUrl: "https://www.youtube.com/embed/eGo4E9VtL_c",
+    videoUrl: "https://www.youtube.com/embed/aNUSgyWRJYA",
     imageUrl: "/exercises/pull-up.jpg",
     dataAiHint: "man pullup"
   },
