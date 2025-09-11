@@ -66,7 +66,7 @@ export const exercises = [
     muscleGroup: "Back",
     equipment: "Pull-up Bar",
     instructions: "Grab the pull-up bar with your palms facing away from you and your hands shoulder-width apart. Hang with your arms fully extended. Pull your body up until your chin is over the bar. Lower yourself back down with control.",
-    videoUrl: "https://www.youtube.com/embed/aAggnpPyR6A",
+    videoUrl: "https://www.youtube.com/embed/eGo4E9VtL_c",
     imageUrl: "/exercises/pull-up.jpg",
     dataAiHint: "man pullup"
   },
@@ -93,7 +93,7 @@ export const exercises = [
     muscleGroup: "Arms",
     equipment: "Dumbbells",
     instructions: "Stand or sit holding a dumbbell in each hand with an underhand grip. Curl the weights up towards your shoulders, keeping your elbows stationary. Squeeze your biceps at the top, then lower the weights back down slowly.",
-    videoUrl: "https://www.youtube.com/embed/KzZILhT_zCg",
+    videoUrl: "https://www.youtube.com/embed/ykJmrZ5v0Oo",
     imageUrl: "/exercises/bicep-curl.jpg",
     dataAiHint: "bicep curl"
   }
