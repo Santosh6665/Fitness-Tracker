@@ -9,7 +9,7 @@ export function Footer() {
         <div className="text-center text-sm space-y-2">
           <p>AI‑Powered Fitness Tracker. Built for B.Tech Final Year Major Project.</p>
           <Separator />
-          <p>Made with ❤️ by Santosh, Abneesh & Subham.</p>
+          <p>Made with ❤️ by Santosh Chaudhary</p>
         </div>
     </footer>
   );
