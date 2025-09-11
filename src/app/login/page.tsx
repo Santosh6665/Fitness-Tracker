@@ -137,12 +137,6 @@ export default function LoginPage() {
                     <FormItem>
                        <div className="flex items-center">
                         <FormLabel>Password</FormLabel>
-                         <Link
-                          href="#"
-                          className="ml-auto inline-block text-sm underline"
-                        >
-                          Forgot your password?
-                        </Link>
                       </div>
                       <FormControl>
                         <Input type="password" {...field} disabled={isLoading}/>
