@@ -102,10 +102,23 @@ function AiForecast() {
 }
 
 function RecentActivity() {
-    const [activity, setActivity] = useState<ActivityEntry[]>([]);
+    const [allActivity, setAllActivity] = useState<ActivityEntry[]>([]);
+    const [displayedActivity, setDisplayedActivity] = useState<ActivityEntry[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
     const { user } = useAuth();
+
+    useEffect(() => {
+      const handleResize = () => {
+        const isMobile = window.innerWidth < 768;
+        setDisplayedActivity(allActivity.slice(0, isMobile ? 4 : 10));
+      };
+      
+      window.addEventListener('resize', handleResize);
+      handleResize(); 
+
+      return () => window.removeEventListener('resize', handleResize);
+    }, [allActivity]);
 
     const fetchActivity = async () => {
         if (!user) return;
@@ -144,9 +157,9 @@ function RecentActivity() {
 
 
             const combined = [...workoutActivities, ...mealActivities, ...goalActivities];
-            combined.sort((a, b) => b.date.localeCompare(a.date));
+            combined.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-            setActivity(combined.slice(0, 10));
+            setAllActivity(combined);
 
         } catch (error) {
             console.error("Failed to fetch recent activity:", error);
@@ -206,8 +219,8 @@ function RecentActivity() {
                               <TableCell className="text-right"><Skeleton className="h-5 w-16 ml-auto" /></TableCell>
                           </TableRow>
                       ))
-                  ) : activity.length > 0 ? (
-                      activity.map((item, index) => (
+                  ) : displayedActivity.length > 0 ? (
+                      displayedActivity.map((item, index) => (
                       <TableRow key={index}>
                           <TableCell className="text-xs sm:text-sm">
                               {item.date}
@@ -352,5 +365,3 @@ export default function DashboardPage() {
       </div>
     );
 }
-
-    
