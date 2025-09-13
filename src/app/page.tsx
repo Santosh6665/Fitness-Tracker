@@ -174,7 +174,7 @@ function RecentActivity() {
     }
 
     return (
-        <Card className="lg:col-span-2">
+        <Card className="col-span-1 lg:col-span-2">
           <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <CardTitle className="font-headline">Recent Activity</CardTitle>
@@ -300,7 +300,7 @@ function TodaysWorkout() {
 
 function ProgressOverview() {
   return (
-    <Card className="lg:col-span-3">
+    <Card className="col-span-1 lg:col-span-3">
       <CardHeader>
         <CardTitle className="font-headline flex items-center gap-2">
             <LineChartIcon />
@@ -310,7 +310,7 @@ function ProgressOverview() {
           A visual summary of your key progress metrics over time.
         </CardDescription>
       </CardHeader>
-      <CardContent className="overflow-x-auto p-0">
+      <CardContent className="p-0">
         <ProgressChart />
       </CardContent>
     </Card>
@@ -333,18 +333,14 @@ export default function DashboardPage() {
             </CardDescription>
             </CardHeader>
         </Card>
-        <div className="grid gap-6 lg:grid-cols-3">
-            <div className="lg:col-span-2 space-y-6">
-                <RecentActivity />
-            </div>
-            <div className="space-y-6 lg:col-span-1">
-                <AiDailyGoals />
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <RecentActivity />
+            <AiDailyGoals />
         </div>
-        <div className="grid gap-6">
+        <div className="grid grid-cols-1 gap-6">
             <ProgressOverview />
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <TodaysWorkout />
             <AiForecast />
         </div>

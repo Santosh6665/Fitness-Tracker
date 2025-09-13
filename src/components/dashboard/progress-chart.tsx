@@ -34,7 +34,7 @@ const chartConfig = {
 
 export function ProgressChart() {
   return (
-    <ChartContainer config={chartConfig} className="w-full h-[300px] min-w-full">
+    <ChartContainer config={chartConfig} className="w-full h-[300px]">
        <ResponsiveContainer width="100%" height="100%">
           <LineChart
             accessibilityLayer
