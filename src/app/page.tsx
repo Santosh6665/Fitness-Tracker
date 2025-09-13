@@ -33,7 +33,6 @@ import { getNutritionHistory } from "@/services/nutritionService";
 import { getGoalsHistory } from "@/services/goalService";
 import { predictFutureProgress } from "@/ai/flows/predict-future-progress";
 import { progressData } from "@/lib/data";
-import { ProgressChart } from "@/components/dashboard/progress-chart";
 import { Footer } from "@/components/layout/footer";
 
 
@@ -237,49 +236,6 @@ function RecentActivity() {
     )
 }
 
-function ProgressOverview() {
-    const { user } = useAuth();
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        async function fetchProfile() {
-            if (user) {
-                try {
-                    await getUserProfile(user.uid);
-                } catch (error) {
-                    console.error("Failed to fetch user profile", error);
-                } finally {
-                    setIsLoading(false);
-                }
-            } else {
-                setIsLoading(false);
-            }
-        }
-        fetchProfile();
-    }, [user]);
-
-    const renderChart = () => {
-        if (isLoading) {
-            return <Skeleton className="h-[300px]" />;
-        }
-        return <ProgressChart />;
-    };
-    
-    return (
-         <Card>
-          <CardHeader>
-            <CardTitle className="font-headline">Progress Overview</CardTitle>
-            <CardDescription>
-              Your progress across key metrics for the last 6 months.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="overflow-x-auto">
-            {renderChart()}
-          </CardContent>
-        </Card>
-    );
-}
-
 function TodaysWorkout() {
   const [workoutLog, setWorkoutLog] = useState<DailyWorkoutLog | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -355,25 +311,22 @@ export default function DashboardPage() {
             </CardDescription>
             </CardHeader>
         </Card>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2 space-y-6">
-                <ProgressOverview />
+                <RecentActivity />
             </div>
-            <div className="space-y-6">
+            <div className="space-y-6 lg:col-span-1">
                 <AiDailyGoals />
             </div>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-             <div className="lg:col-span-2 space-y-6">
-                <RecentActivity />
-            </div>
             <div className="space-y-6">
                 <TodaysWorkout />
+            </div>
+            <div className="space-y-6">
                 <AiForecast />
             </div>
         </div>
       </div>
     );
 }
-
-    
