@@ -356,16 +356,20 @@ export default function DashboardPage() {
             </CardHeader>
         </Card>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <ProgressOverview />
+            <div className="lg:col-span-2 space-y-6">
+                <ProgressOverview />
+            </div>
             <div className="space-y-6">
-            <AiDailyGoals />
+                <AiDailyGoals />
             </div>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <RecentActivity />
+             <div className="lg:col-span-2 space-y-6">
+                <RecentActivity />
+            </div>
             <div className="space-y-6">
-            <TodaysWorkout />
-            <AiForecast />
+                <TodaysWorkout />
+                <AiForecast />
             </div>
         </div>
       </div>
