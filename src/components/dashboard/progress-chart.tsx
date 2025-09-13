@@ -39,8 +39,8 @@ export function ProgressChart() {
         accessibilityLayer
         data={progressData}
         margin={{
-          left: -62,
-          right: -62,
+          left: 12,
+          right: 12,
           top: 5,
         }}
       >
