@@ -266,7 +266,7 @@ function ProgressOverview() {
     };
     
     return (
-         <Card className="lg:col-span-2">
+         <Card>
           <CardHeader>
             <CardTitle className="font-headline">Progress Overview</CardTitle>
             <CardDescription>
