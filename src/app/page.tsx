@@ -345,7 +345,7 @@ export default function DashboardPage() {
             </div>
             <div className="space-y-6">
                 <TodaysWorkout />
-                <AIForecast />
+                <AiForecast />
             </div>
         </div>
 
