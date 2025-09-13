@@ -310,7 +310,7 @@ function ProgressOverview() {
           A visual summary of your key progress metrics over time.
         </CardDescription>
       </CardHeader>
-      <CardContent className="pl-0 pr-4">
+      <CardContent className="pl-0 pr-4 overflow-x-auto">
         <ProgressChart />
       </CardContent>
     </Card>
@@ -334,13 +334,13 @@ export default function DashboardPage() {
             </CardHeader>
         </Card>
         
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ProgressOverview />
+            <AiDailyGoals />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <TodaysWorkout />
-            <AiDailyGoals />
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
