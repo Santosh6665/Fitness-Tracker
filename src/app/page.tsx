@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bot, Loader2, Sparkles, RefreshCw, LineChart, Activity, Timer, Flame, Salad, Trophy } from "lucide-react";
+import { Bot, Loader2, Sparkles, RefreshCw, LineChart as LineChartIcon, Activity, Timer, Flame, Salad, Trophy } from "lucide-react";
 import Link from "next/link";
 import {
   Card,
@@ -34,6 +34,7 @@ import { getGoalsHistory } from "@/services/goalService";
 import { predictFutureProgress } from "@/ai/flows/predict-future-progress";
 import { progressData } from "@/lib/data";
 import { Footer } from "@/components/layout/footer";
+import { ProgressChart } from "@/components/dashboard/progress-chart";
 
 
 function AiForecast() {
@@ -295,6 +296,25 @@ function TodaysWorkout() {
   );
 }
 
+function ProgressOverview() {
+  return (
+    <Card className="lg:col-span-2">
+      <CardHeader>
+        <CardTitle className="font-headline flex items-center gap-2">
+            <LineChartIcon />
+            Progress Overview
+        </CardTitle>
+        <CardDescription>
+          A visual summary of your key progress metrics over time.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="overflow-x-auto">
+        <ProgressChart />
+      </CardContent>
+    </Card>
+  );
+}
+
 
 export default function DashboardPage() {
     const { user } = useAuth();
@@ -320,12 +340,9 @@ export default function DashboardPage() {
             </div>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <div className="space-y-6">
-                <TodaysWorkout />
-            </div>
-            <div className="space-y-6">
-                <AiForecast />
-            </div>
+            <TodaysWorkout />
+            <AiForecast />
+            <ProgressOverview />
         </div>
       </div>
     );
