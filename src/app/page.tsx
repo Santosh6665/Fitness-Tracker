@@ -174,7 +174,7 @@ function RecentActivity() {
     }
 
     return (
-        <Card className="col-span-1 lg:col-span-2">
+        <Card className="lg:col-span-2">
           <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <CardTitle className="font-headline">Recent Activity</CardTitle>
@@ -300,7 +300,7 @@ function TodaysWorkout() {
 
 function ProgressOverview() {
   return (
-    <Card className="col-span-1 lg:col-span-3">
+    <Card className="lg:col-span-2">
       <CardHeader>
         <CardTitle className="font-headline flex items-center gap-2">
             <LineChartIcon />
@@ -310,7 +310,7 @@ function ProgressOverview() {
           A visual summary of your key progress metrics over time.
         </CardDescription>
       </CardHeader>
-      <CardContent className="pl-0 pr-4 overflow-x-auto">
+      <CardContent className="pl-0 pr-4">
         <ProgressChart />
       </CardContent>
     </Card>
@@ -334,7 +334,7 @@ export default function DashboardPage() {
             </CardHeader>
         </Card>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <ProgressOverview />
             <AiDailyGoals />
         </div>
