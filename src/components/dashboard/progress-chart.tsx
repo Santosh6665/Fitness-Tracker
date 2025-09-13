@@ -34,16 +34,16 @@ const chartConfig = {
 
 export function ProgressChart() {
   return (
-    <ChartContainer config={chartConfig} className="w-full h-[300px] min-w-[600px] sm:min-w-full">
+    <ChartContainer config={chartConfig} className="w-full h-[300px] min-w-full">
        <ResponsiveContainer width="100%" height="100%">
           <LineChart
             accessibilityLayer
             data={progressData}
             margin={{
-              left: 12,
-              right: 12,
-              top: 5,
-              bottom: 5,
+              left: 0,
+              right: 20,
+              top: 10,
+              bottom: 10,
             }}
           >
             <CartesianGrid vertical={false} />

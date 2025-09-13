@@ -186,52 +186,54 @@ function RecentActivity() {
             </Button>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Activity</TableHead>
-                  <TableHead className="hidden md:table-cell">Details</TableHead>
-                  <TableHead className="text-right">Value</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                    Array.from({length: 5}).map((_, i) => (
-                        <TableRow key={i}>
-                            <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                            <TableCell><Skeleton className="h-5 w-28" /></TableCell>
-                            <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-32" /></TableCell>
-                            <TableCell className="text-right"><Skeleton className="h-5 w-16 ml-auto" /></TableCell>
-                        </TableRow>
-                    ))
-                ) : activity.length > 0 ? (
-                    activity.map((item, index) => (
-                    <TableRow key={index}>
-                        <TableCell className="text-xs sm:text-sm">
-                            {item.date}
-                        </TableCell>
-                        <TableCell className="font-medium text-xs sm:text-sm flex items-center gap-2">
-                          {iconMap[item.type]}
-                          <span className="capitalize">{item.type}</span>
-                        </TableCell>
-                        <TableCell className="text-xs sm:text-sm hidden md:table-cell">
-                            {item.description}
-                        </TableCell>
-                        <TableCell className="text-right text-xs sm:text-sm">
-                            {item.value}
-                        </TableCell>
-                    </TableRow>
-                    ))
-                ) : (
-                    <TableRow>
-                        <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
-                            No activity found.
-                        </TableCell>
-                    </TableRow>
-                )}
-              </TableBody>
-            </Table>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Activity</TableHead>
+                    <TableHead className="hidden md:table-cell">Details</TableHead>
+                    <TableHead className="text-right">Value</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                      Array.from({length: 5}).map((_, i) => (
+                          <TableRow key={i}>
+                              <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                              <TableCell><Skeleton className="h-5 w-28" /></TableCell>
+                              <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-32" /></TableCell>
+                              <TableCell className="text-right"><Skeleton className="h-5 w-16 ml-auto" /></TableCell>
+                          </TableRow>
+                      ))
+                  ) : activity.length > 0 ? (
+                      activity.map((item, index) => (
+                      <TableRow key={index}>
+                          <TableCell className="text-xs sm:text-sm">
+                              {item.date}
+                          </TableCell>
+                          <TableCell className="font-medium text-xs sm:text-sm flex items-center gap-2">
+                            {iconMap[item.type]}
+                            <span className="capitalize">{item.type}</span>
+                          </TableCell>
+                          <TableCell className="text-xs sm:text-sm hidden md:table-cell">
+                              {item.description}
+                          </TableCell>
+                          <TableCell className="text-right text-xs sm:text-sm">
+                              {item.value}
+                          </TableCell>
+                      </TableRow>
+                      ))
+                  ) : (
+                      <TableRow>
+                          <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
+                              No activity found.
+                          </TableCell>
+                      </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
     )
@@ -298,7 +300,7 @@ function TodaysWorkout() {
 
 function ProgressOverview() {
   return (
-    <Card className="lg:col-span-2">
+    <Card className="lg:col-span-3">
       <CardHeader>
         <CardTitle className="font-headline flex items-center gap-2">
             <LineChartIcon />
@@ -308,7 +310,7 @@ function ProgressOverview() {
           A visual summary of your key progress metrics over time.
         </CardDescription>
       </CardHeader>
-      <CardContent className="overflow-x-auto">
+      <CardContent className="overflow-x-auto p-0">
         <ProgressChart />
       </CardContent>
     </Card>
@@ -339,10 +341,12 @@ export default function DashboardPage() {
                 <AiDailyGoals />
             </div>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6">
+            <ProgressOverview />
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
             <TodaysWorkout />
             <AiForecast />
-            <ProgressOverview />
         </div>
       </div>
     );
