@@ -1,7 +1,7 @@
 
 "use client";
 
-import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
 import {
   ChartContainer,
@@ -34,104 +34,107 @@ const chartConfig = {
 
 export function ProgressChart() {
   return (
-    <ChartContainer config={chartConfig} className="lg:min-h-[300h] w-full">
-      <LineChart
-        accessibilityLayer
-        data={progressData}
-        margin={{
-          left: 12,
-          right: 12,
-          top: 5,
-        }}
-      >
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="month"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          tickFormatter={(value) => value.slice(0, 3)}
-        />
-        <YAxis
-          yAxisId="weight"
-          stroke="var(--color-weight)"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          tickCount={6}
-          domain={['dataMin - 5', 'dataMax + 5']}
-        />
-        <YAxis
-          yAxisId="squat"
-          orientation="right"
-          stroke="var(--color-squat)"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          tickCount={6}
-          domain={['dataMin - 10', 'dataMax + 10']}
-        />
-         <YAxis
-          yAxisId="calories"
-          orientation="left"
-          stroke="var(--color-calories)"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={-20}
-          tick={{ display: 'none' }}
-          domain={['dataMin - 500', 'dataMax + 500']}
-        />
-         <YAxis
-          yAxisId="workouts"
-          orientation="right"
-          stroke="var(--color-workouts)"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={-20}
-          tick={{ display: 'none' }}
-          domain={[0, 'dataMax + 1']}
-        />
-        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
-        <ChartLegend content={<ChartLegendContent />} />
-        <Line
-          dataKey="weight"
-          type="monotone"
-          stroke="var(--color-weight)"
-          strokeWidth={2}
-          dot={true}
-          yAxisId="weight"
-          name="Weight"
-        />
-        <Line
-          dataKey="squat"
-          type="monotone"
-          stroke="var(--color-squat)"
-          strokeWidth={2}
-          dot={true}
-          yAxisId="squat"
-          name="Squat"
-        />
-        <Line
-          dataKey="calories"
-          type="monotone"
-          stroke="var(--color-calories)"
-          strokeWidth={2}
-          dot={true}
-          yAxisId="calories"
-          name="Calories"
-          strokeDasharray="3 3"
-        />
-        <Line
-          dataKey="workouts"
-          type="monotone"
-          stroke="var(--color-workouts)"
-          strokeWidth={2}
-          dot={true}
-          yAxisId="workouts"
-          name="Workouts"
-          strokeDasharray="3 3"
-        />
-      </LineChart>
+    <ChartContainer config={chartConfig} className="w-full h-[300px]">
+       <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            accessibilityLayer
+            data={progressData}
+            margin={{
+              left: -20,
+              right: 20,
+              top: 5,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <YAxis
+              yAxisId="weight"
+              stroke="var(--color-weight)"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickCount={6}
+              domain={['dataMin - 5', 'dataMax + 5']}
+            />
+            <YAxis
+              yAxisId="squat"
+              orientation="right"
+              stroke="var(--color-squat)"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              tickCount={6}
+              domain={['dataMin - 10', 'dataMax + 10']}
+            />
+            <YAxis
+              yAxisId="calories"
+              orientation="left"
+              stroke="var(--color-calories)"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={-20}
+              tick={{ display: 'none' }}
+              domain={['dataMin - 500', 'dataMax + 500']}
+            />
+            <YAxis
+              yAxisId="workouts"
+              orientation="right"
+              stroke="var(--color-workouts)"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={-20}
+              tick={{ display: 'none' }}
+              domain={[0, 'dataMax + 1']}
+            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+            <ChartLegend content={<ChartLegendContent />} />
+            <Line
+              dataKey="weight"
+              type="monotone"
+              stroke="var(--color-weight)"
+              strokeWidth={2}
+              dot={true}
+              yAxisId="weight"
+              name="Weight"
+            />
+            <Line
+              dataKey="squat"
+              type="monotone"
+              stroke="var(--color-squat)"
+              strokeWidth={2}
+              dot={true}
+              yAxisId="squat"
+              name="Squat"
+            />
+            <Line
+              dataKey="calories"
+              type="monotone"
+              stroke="var(--color-calories)"
+              strokeWidth={2}
+              dot={true}
+              yAxisId="calories"
+              name="Calories"
+              strokeDasharray="3 3"
+            />
+            <Line
+              dataKey="workouts"
+              type="monotone"
+              stroke="var(--color-workouts)"
+              strokeWidth={2}
+              dot={true}
+              yAxisId="workouts"
+              name="Workouts"
+              strokeDasharray="3 3"
+            />
+          </LineChart>
+      </ResponsiveContainer>
     </ChartContainer>
   );
 }

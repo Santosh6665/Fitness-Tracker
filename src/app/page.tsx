@@ -273,7 +273,7 @@ function ProgressOverview() {
               Your progress across key metrics for the last 6 months.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-x-auto">
             {renderChart()}
           </CardContent>
         </Card>
