@@ -14,6 +14,7 @@ import {
   User,
   Activity,
   NotebookPen,
+  Map,
 } from "lucide-react";
 
 import {
@@ -42,6 +43,7 @@ const navItems = [
   { href: "/nutrition", icon: Flame, label: "Nutrition" },
   { href: "/reports", icon: BarChart, label: "Reports" },
   { href: "/ai-coach", icon: Bot, label: "AI Coach" },
+  { href: "/journey-tracker", icon: Map, label: "Journey Tracker" },
 ];
 
 function PageHeader() {
