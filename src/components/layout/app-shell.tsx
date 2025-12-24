@@ -44,6 +44,7 @@ const navItems = [
   { href: "/reports", icon: BarChart, label: "Reports" },
   { href: "/ai-coach", icon: Bot, label: "AI Coach" },
   { href: "/journey-tracker", icon: Map, label: "Journey Tracker" },
+  { href: "/live-tracker", icon: Map, label: "Live Tracker" },
 ];
 
 function PageHeader() {

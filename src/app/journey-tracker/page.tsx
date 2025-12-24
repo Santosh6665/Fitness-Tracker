@@ -112,7 +112,7 @@ export default function JourneyTrackerPage() {
       <Card>
         <CardHeader>
           <CardTitle className="font-headline flex items-center gap-2">
-            <Rocket /> Manual Journey Tracker
+            <Rocket /> Manual Journey Planner
           </CardTitle>
           <CardDescription>
             Plan a walk or run, and our AI will estimate the distance and steps.
