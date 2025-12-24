@@ -15,3 +15,4 @@ import '@/ai/flows/get-post-workout-nutrition-advice.ts';
 import '@/ai/flows/get-nutrition-insight.ts';
 import '@/ai/flows/generate-recent-workouts.ts';
 import '@/ai/flows/calculate-journey.ts';
+import '@/ai/flows/get-physique-assessment.ts';

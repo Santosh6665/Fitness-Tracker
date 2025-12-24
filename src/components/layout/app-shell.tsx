@@ -15,6 +15,7 @@ import {
   Activity,
   NotebookPen,
   Map,
+  PersonStanding,
 } from "lucide-react";
 
 import {
@@ -41,6 +42,7 @@ const navItems = [
   { href: "/exercises", icon: Dumbbell, label: "Exercises" },
   { href: "/form-check", icon: Video, label: "Form Check" },
   { href: "/nutrition", icon: Flame, label: "Nutrition" },
+  { href: "/physique-assessment", icon: PersonStanding, label: "Physique" },
   { href: "/reports", icon: BarChart, label: "Reports" },
   { href: "/ai-coach", icon: Bot, label: "AI Coach" },
   { href: "/journey-tracker", icon: Map, label: "Journey Tracker" },
