@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Activity, Edit, Flame, Loader2, RefreshCw, Timer, Sparkles, Bot, NotebookPen } from "lucide-react";
+import { Activity, Edit, Flame, Loader2, RefreshCw, Timer, Sparkles, Bot, NotebookPen, Footprints } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/components/auth/auth-provider";
 import { getTodaysWorkoutLog, updateTodaysWorkoutLog, getWorkoutHistory } from "@/services/workoutService";
@@ -58,6 +58,7 @@ const initialWorkoutData: DailyWorkoutLog = {
   sessions: 0,
   duration: 0,
   calories: 0,
+  steps: 0,
 };
 
 const workoutMeta = {
@@ -70,6 +71,7 @@ type ManualLogData = {
     type: string;
     duration: number;
     calories: number;
+    steps?: number;
 };
 
 
@@ -206,6 +208,7 @@ function TodaysActivity({ onLogWorkout }: { onLogWorkout: (data: ManualLogData) 
             Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-28" />)
           ) : (
             Object.entries(workoutLog || initialWorkoutData).map(([key, value]) => {
+              if (key === 'steps') return null; // We'll show steps separately
               const meta = workoutMeta[key as keyof typeof workoutMeta];
               if (!meta) return null;
               return (
@@ -388,15 +391,16 @@ export default function WorkoutsPage() {
       
       const newWorkoutLog: DailyWorkoutLog = {
         ...currentLog,
-        sessions: currentLog.sessions + 1,
+        sessions: workoutData.type === 'steps_only' ? currentLog.sessions : currentLog.sessions + 1,
         duration: currentLog.duration + workoutData.duration,
         calories: currentLog.calories + workoutData.calories,
+        steps: (currentLog.steps || 0) + (workoutData.steps || 0),
       };
       
       await updateTodaysWorkoutLog(user.uid, newWorkoutLog);
       toast({
         title: "Workout Logged!",
-        description: `Your ${workoutData.type} workout has been added to your daily log.`
+        description: `Your ${workoutData.type} entry has been added to your daily log.`
       });
       // Force re-render of children to show updated data
       setKey(prevKey => prevKey + 1);
@@ -421,10 +425,11 @@ export default function WorkoutsPage() {
 }
 
 const manualLogSchema = z.object({
-  type: z.string().min(1, "Please select a workout type."),
+  type: z.string().min(1, "Please select a workout type or 'Steps only'."),
   otherType: z.string().optional(),
-  duration: z.coerce.number().min(1, "Duration must be at least 1 minute."),
-  calories: z.coerce.number().min(0, "Cannot be negative."),
+  duration: z.coerce.number().min(0, "Duration cannot be negative.").default(0),
+  calories: z.coerce.number().min(0, "Cannot be negative.").default(0),
+  steps: z.coerce.number().min(0, "Steps cannot be negative.").optional(),
 }).refine(data => {
     if (data.type === 'Other' && (!data.otherType || data.otherType.length < 3)) {
         return false;
@@ -433,6 +438,14 @@ const manualLogSchema = z.object({
 }, {
     message: "Please enter a valid custom workout type (min. 3 characters).",
     path: ["otherType"],
+}).refine(data => {
+    if (data.type !== 'steps_only' && data.duration <= 0) {
+        return false;
+    }
+    return true;
+}, {
+    message: "Duration must be greater than 0 for workouts.",
+    path: ["duration"],
 });
 
 
@@ -459,7 +472,7 @@ const caloriesPerMinuteMap: Record<string, number> = {
 };
 
 
-function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: string; duration: number; calories: number; }) => void }) {
+function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: ManualLogData) => void }) {
   const [open, setOpen] = useState(false);
   const form = useForm<ManualLogValues>({
     resolver: zodResolver(manualLogSchema),
@@ -468,6 +481,7 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
       otherType: "",
       duration: 0,
       calories: 0,
+      steps: 0,
     },
   });
 
@@ -476,7 +490,7 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
   const watchedDuration = watch("duration");
 
   useEffect(() => {
-    if (watchedType && watchedDuration > 0) {
+    if (watchedType && watchedDuration > 0 && watchedType !== 'steps_only') {
       const calories = Math.round((caloriesPerMinuteMap[watchedType] || 7) * watchedDuration);
       setValue("calories", calories);
     }
@@ -484,15 +498,18 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
 
 
   const onSubmit = (values: ManualLogValues) => {
-    const workoutData = {
-        type: values.type === 'Other' ? values.otherType! : values.type,
+    const workoutData: ManualLogData = {
+        type: values.type === 'steps_only' ? 'steps_only' : (values.type === 'Other' ? values.otherType! : values.type),
         duration: values.duration,
         calories: values.calories,
+        steps: values.steps || 0
     };
     onLogWorkout(workoutData);
     form.reset();
     setOpen(false);
   };
+  
+  const isStepsOnly = watchedType === 'steps_only';
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => {
@@ -501,14 +518,14 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
     }}>
       <DialogTrigger asChild>
         <Button>
-          <Edit className="mr-2" /> Log a Workout
+          <Edit className="mr-2" /> Log Activity
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-headline">Log a Workout</DialogTitle>
+          <DialogTitle className="font-headline">Log Activity</DialogTitle>
           <DialogDescription>
-            Enter the details of your completed workout session.
+            Enter a workout session or just your steps for the day.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -518,14 +535,15 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
                 name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Workout Type</FormLabel>
+                    <FormLabel>Activity Type</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                             <SelectTrigger>
-                                <SelectValue placeholder="Select a workout type" />
+                                <SelectValue placeholder="Select an activity type" />
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
+                            <SelectItem value="steps_only">Steps Only</SelectItem>
                             {workoutTypes.map(type => (
                                 <SelectItem key={type} value={type}>{type}</SelectItem>
                             ))}
@@ -551,35 +569,52 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
                   )}
                 />
               )}
+            
+            {!isStepsOnly && (
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={control}
+                  name="duration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Duration (min)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name="calories"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Calories (kcal)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+            
+            <FormField
+                control={form.control}
+                name="steps"
+                render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Steps</FormLabel>
+                    <FormControl>
+                    <Input type="number" placeholder="e.g., 10000" {...field} onChange={e => field.onChange(parseInt(e.target.value, 10) || 0)} />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+                )}
+            />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={control}
-                name="duration"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Duration (min)</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="calories"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Calories Burned (kcal)</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
             <DialogFooter>
               <Button type="submit" className="w-full">
                 Add to Daily Log
@@ -591,5 +626,3 @@ function LogWorkoutDialog({ onLogWorkout }: { onLogWorkout: (data: { type: strin
     </Dialog>
   );
 }
-
-    

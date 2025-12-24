@@ -34,6 +34,7 @@ export const dailyWorkoutLogSchema = z.object({
     sessions: z.number(),
     duration: z.number(),
     calories: z.number(),
+    steps: z.number().optional(),
 });
 
 export type DailyWorkoutLog = z.infer<typeof dailyWorkoutLogSchema>;

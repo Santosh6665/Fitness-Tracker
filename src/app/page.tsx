@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
-import { Bot, Loader2, Sparkles, RefreshCw, LineChart as LineChartIcon, Activity, Timer, Flame, Salad, Trophy } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Bot, Loader2, Sparkles, RefreshCw, LineChart as LineChartIcon, Activity, Timer, Flame, Salad, Trophy, Footprints } from "lucide-react";
 import Link from "next/link";
 import {
   Card,
@@ -26,27 +26,36 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AiDailyGoals } from "@/components/dashboard/ai-daily-goals";
 import { useAuth } from "@/components/auth/auth-provider";
 import { getUserProfile } from "@/services/userService";
-import { UserProfile, DailyWorkoutLog, ActivityEntry } from "@/lib/types";
+import { UserProfile, DailyWorkoutLog, ActivityEntry, DailyGoal } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getTodaysWorkoutLog, getWorkoutHistory } from "@/services/workoutService";
 import { getNutritionHistory } from "@/services/nutritionService";
-import { getGoalsHistory } from "@/services/goalService";
+import { getTodaysGoals, getGoalsHistory } from "@/services/goalService";
 import { predictFutureProgress } from "@/ai/flows/predict-future-progress";
-import { progressData } from "@/lib/data";
-import { Footer } from "@/components/layout/footer";
 import { ProgressChart } from "@/components/dashboard/progress-chart";
+import { getProgressChartData } from "@/services/progressService";
 
 
 function AiForecast() {
+  const { user } = useAuth();
   const [prediction, setPrediction] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const handleGetForecast = async () => {
+    if (!user) return;
     setIsLoading(true);
     setPrediction(null);
     try {
-      const result = await predictFutureProgress({ history: progressData });
+      const [profile, history] = await Promise.all([
+        getUserProfile(user.uid),
+        getProgressChartData(user.uid)
+      ]);
+      
+      const result = await predictFutureProgress({ 
+        goals: profile?.goals || [],
+        history: history 
+      });
       setPrediction(result.prediction);
     } catch (error) {
       console.error("Failed to get forecast:", error);
@@ -254,31 +263,40 @@ function RecentActivity() {
 
 function TodaysWorkout() {
   const [workoutLog, setWorkoutLog] = useState<DailyWorkoutLog | null>(null);
+  const [goals, setGoals] = useState<DailyGoal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
   
-  useEffect(() => {
-    async function fetchWorkoutLog() {
-      if (user) {
-        setIsLoading(true);
-        try {
-          const data = await getTodaysWorkoutLog(user.uid);
-          setWorkoutLog(data);
-        } catch (error) {
-          toast({ variant: 'destructive', title: 'Failed to load workout data.' });
-        } finally {
-          setIsLoading(false);
-        }
+  const fetchTodaysData = useCallback(async () => {
+    if (user) {
+      setIsLoading(true);
+      try {
+        const [workoutData, goalsData] = await Promise.all([
+          getTodaysWorkoutLog(user.uid),
+          getTodaysGoals(user.uid)
+        ]);
+        setWorkoutLog(workoutData);
+        setGoals(goalsData || []);
+      } catch (error) {
+        toast({ variant: 'destructive', title: 'Failed to load today\'s data.' });
+      } finally {
+        setIsLoading(false);
       }
     }
-    fetchWorkoutLog();
   }, [user, toast]);
+
+  useEffect(() => {
+    fetchTodaysData();
+  }, [fetchTodaysData]);
+
+  const stepGoal = goals.find(g => g.unit === 'steps');
 
   const stats = [
     { name: 'Workouts', value: workoutLog?.sessions || 0, unit: 'sessions', icon: Activity },
     { name: 'Duration', value: workoutLog?.duration || 0, unit: 'min', icon: Timer },
     { name: 'Calories', value: `~${workoutLog?.calories || 0}`, unit: 'kcal', icon: Flame },
+    { name: 'Steps', value: workoutLog?.steps || 0, unit: stepGoal ? ` / ${stepGoal.target}` : 'steps', icon: Footprints },
   ];
 
   return (
@@ -289,7 +307,7 @@ function TodaysWorkout() {
       </CardHeader>
       <CardContent className="space-y-4">
         {isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16" />)
+          Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-16" />)
         ) : (
           stats.map(stat => (
             <div key={stat.name} className="flex items-center justify-between rounded-md border p-3">
@@ -297,14 +315,14 @@ function TodaysWorkout() {
                 <stat.icon className="h-6 w-6 text-primary" />
                 <span className="font-medium">{stat.name}</span>
               </div>
-              <span className="font-bold font-headline">{stat.value} <span className="text-sm font-normal text-muted-foreground">{stat.unit}</span></span>
+              <span className="font-bold font-headline">{stat.value}<span className="text-sm font-normal text-muted-foreground">{stat.unit}</span></span>
             </div>
           ))
         )}
       </CardContent>
       <CardFooter>
         <Button asChild className="w-full">
-            <Link href="/workouts">Log a Workout</Link>
+            <Link href="/workouts">Log Activity</Link>
         </Button>
       </CardFooter>
     </Card>

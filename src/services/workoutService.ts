@@ -69,5 +69,3 @@ export async function getWorkoutHistory(userId: string): Promise<WorkoutEntry[]>
         throw new Error("Unable to retrieve workout history.");
     }
 }
-
-    

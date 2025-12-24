@@ -14,7 +14,7 @@ const DailyGoalSchema = z.object({
 export type DailyGoal = z.infer<typeof DailyGoalSchema>;
 
 const DailyGoalsOutputSchema = z.object({
-  goals: z.array(DailyGoalSchema).describe('A list of 2-4 daily fitness goals for the user.'),
+  goals: z.array(DailyGoalSchema).describe('A list of 2-4 daily fitness goals for the user, including at least one step-based goal.'),
 });
 
 export type DailyGoalsOutput = z.infer<typeof DailyGoalsOutputSchema>;
@@ -30,6 +30,7 @@ const prompt = ai.definePrompt({
   prompt: `You are a motivating and creative AI fitness coach.
 Generate a set of 2 to 4 varied and engaging daily fitness goals for a user.
 The goals should be a mix of activity, mindfulness, and nutrition.
+One of the goals MUST be a step-based goal (e.g., 'Walk 8,000 steps').
 For each goal, provide a name, a target, and a unit.
 The 'current' progress for all generated goals must be initialized to 0.
 
