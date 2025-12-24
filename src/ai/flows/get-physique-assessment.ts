@@ -48,17 +48,16 @@ const prompt = ai.definePrompt({
 2.  **DO NOT** use negative or judgmental language. Focus on observable characteristics and potential areas for development.
 3.  **DO NOT** give medical advice. Frame suggestions in the context of general fitness and aesthetics.
 4.  Structure your response in Markdown with headings for different body regions (e.g., "Upper Body", "Core", "Lower Body", "Posture").
-5.  Keep the analysis concise, focusing on 2-3 key observations.
+5.  Keep the analysis very concise, focusing on just 1-2 key observations per body region.
 
 **Analysis Task:**
-Analyze the two images provided (front and side view). Provide a descriptive assessment focusing on aspects like muscular development, definition, and posture.
+Analyze the two images provided (front and side view). Provide a short, descriptive assessment focusing on aspects like muscular development, definition, and posture.
 
 **Example Feedback:**
 "### Upper Body
 - Your shoulders appear well-developed, creating a strong V-taper shape from the front view.
-- There is visible definition in your arms, indicating consistent training.
 ### Posture
-- From the side view, your posture appears upright and stable, with your shoulders aligned over your hips. This is a great foundation for heavy lifting."
+- From the side view, your posture appears upright and stable."
 
 **User Images:**
 - Front View: {{media url=frontPhotoDataUri}}
