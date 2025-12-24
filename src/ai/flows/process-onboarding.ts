@@ -61,6 +61,7 @@ const processOnboardingFlow = ai.defineFlow(
     name: 'processOnboardingFlow',
     inputSchema: ProcessOnboardingInputSchema,
     outputSchema: ProcessOnboardingOutputSchema,
+    model: 'gemini-1.5-flash-latest',
   },
   async (input) => {
     const { output } = await prompt(input);

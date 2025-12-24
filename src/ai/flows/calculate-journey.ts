@@ -52,6 +52,7 @@ const calculateJourneyFlow = ai.defineFlow(
     name: 'calculateJourneyFlow',
     inputSchema: CalculateJourneyInputSchema,
     outputSchema: CalculateJourneyOutputSchema,
+    model: 'gemini-1.5-flash-latest',
   },
   async (input) => {
     const { output } = await prompt(input);

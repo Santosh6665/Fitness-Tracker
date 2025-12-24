@@ -44,7 +44,7 @@ const getAiFormCorrectionFeedbackFlow = ai.defineFlow(
     name: 'getAiFormCorrectionFeedbackFlow',
     inputSchema: GetAiFormCorrectionFeedbackInputSchema,
     outputSchema: GetAiFormCorrectionFeedbackOutputSchema,
-    model: 'gemini-2.5-flash-lite',
+    model: 'gemini-1.5-flash-latest',
   },
   async input => {
     const {output} = await prompt(input);
